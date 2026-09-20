@@ -8,6 +8,7 @@ import "webpack-dev-server";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const componentsDirectory = path.resolve(__dirname, 'src/components');
 
 const config: webpack.Configuration = {
   entry: "./src/app/index.ts",
@@ -31,9 +32,22 @@ const config: webpack.Configuration = {
         test: /\.(png|jpe?g|gif|svg)$/i, // Match common image file types
         type: 'asset/resource',         // Tells Webpack to emit the file and return the URL
       },
-      ,
+      {
+        test: /\.scss$/,
+        include: [componentsDirectory],
+        use: [
+          {
+          loader: 'css-loader',
+            options: {
+              exportType: 'string',
+            },
+          },
+          'sass-loader',
+        ],
+      },
       {
         test: /\.s[ac]ss$/,
+        exclude: [componentsDirectory],
         use: ["style-loader", "css-loader", "sass-loader"],
       },
     ],

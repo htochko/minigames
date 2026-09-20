@@ -1,3 +1,6 @@
 import './../styles/globals.scss';
-// to remove
-console.log('Mini games');
+import { registerHeader } from '../components/header/header';
+import { registerFooter } from '../components/footer/footer';
+
+registerHeader();
+registerFooter();

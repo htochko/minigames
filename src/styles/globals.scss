@@ -6,3 +6,6 @@ body {
   color: tokens.$on-bg;
   font-family: tokens.$inter;
 }
+main {
+  min-height: 100vh;
+}

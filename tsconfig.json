@@ -12,9 +12,14 @@
     //"target": "esnext",
     //"types": [],
     // For nodejs:
-    "lib": ["esnext"],
-    "types": ["node"],
+     //"lib": ["ESNext", "DOM", "DOM.Iterable", "Decorators"],
+    //"types": ["node"],
     // and npm install -D @types/node
+    "target": "es2022",
+    "lib": ["es2022", "dom"],
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
 
     // Other Outputs
     "sourceMap": true,
