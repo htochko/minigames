@@ -34,7 +34,7 @@
     // "noPropertyAccessFromIndexSignature": true,
 
     // Recommended Options
-    "strict": true,
+    "strict": true, // from task https://github.com/rolling-scopes-school/qualifying-stage/blob/main/tasks/minigames/tasks/story-1/RSS-QS-1-2-2-typescript-config.md
     "jsx": "react-jsx",
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
@@ -42,7 +42,8 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
     // Adde manually
-    "allowJs": true
+    "allowJs": true,
+    "noImplicitAny": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
