@@ -1,6 +1,7 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default [
   // Global options
@@ -33,4 +34,6 @@ export default [
       'unicorn/no-empty-file': 'off',
     },
   },
+  // Disables ESLint formatting rules that conflict with Prettier (Must be last)
+  eslintConfigPrettier,
 ];
