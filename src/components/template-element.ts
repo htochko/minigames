@@ -7,8 +7,8 @@ interface TemplateElementConfig {
 }
 
 const validateSelector = (selector: string) => {
-  if (selector.indexOf("-") <= 0) {
-    throw new Error("The selector must contain a hyphen (-)");
+  if (selector.indexOf('-') <= 0) {
+    throw new Error('The selector must contain a hyphen (-)');
   }
 };
 

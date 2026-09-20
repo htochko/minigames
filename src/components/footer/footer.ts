@@ -2,7 +2,7 @@ import styles from './footer.scss';
 
 export class Footer extends HTMLElement {
   constructor() {
-    super(); 
+    super();
     // Attach a Shadow DOM root (mode: 'open' allows inspection if needed)
     const shadow = this.attachShadow({ mode: 'open' });
 
