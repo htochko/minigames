@@ -30,12 +30,17 @@ const config: webpack.Configuration = {
       {
         test: /\.(png|jpe?g|gif|svg)$/i, // Match common image file types
         type: 'asset/resource',         // Tells Webpack to emit the file and return the URL
-      }
+      },
+      ,
+      {
+        test: /\.s[ac]ss$/,
+        use: ["style-loader", "css-loader", "sass-loader"],
+      },
     ],
   },
   resolve: {
     tsconfig: true, // automatically find tsconfig.json
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: [".tsx", ".ts", ".js", ".scss", ".css"],
   },
   output: {
     filename: "bundle.js",
