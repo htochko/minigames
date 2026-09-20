@@ -35,7 +35,7 @@ const config: webpack.Configuration = {
   },
   resolve: {
     tsconfig: true, // automatically find tsconfig.json
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: [".tsx", ".ts", ".js", ".scss"],
   },
   output: {
     filename: "bundle.js",
