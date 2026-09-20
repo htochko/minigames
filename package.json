@@ -1,6 +1,19 @@
 {
+  "type": "module",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack serve --mode development"
+  },
   "devDependencies": {
+    "@types/node": "^26.6.2",
+    "css-loader": "^7.1.5",
+    "html-webpack-plugin": "^5.6.8",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.6.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
     "webpack": "^5.111.1",
-    "webpack-cli": "^7.2.3"
+    "webpack-cli": "^7.2.3",
+    "webpack-dev-server": "^6.0.0"
   }
 }

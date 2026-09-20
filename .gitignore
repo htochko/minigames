@@ -2,3 +2,7 @@
 *.css.map
 *.sass.map
 *.scss.map
+.DS_Store
+.vscode/
+node_modules/
+dist/
