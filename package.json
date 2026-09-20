@@ -5,7 +5,8 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,json,css,html}\"",
     "lint": "eslint .",
     "build": "webpack",
-    "start": "webpack serve --mode development"
+    "start": "webpack serve --mode development",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
@@ -17,6 +18,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-unicorn": "^76.0.0",
     "html-webpack-plugin": "^5.6.8",
+    "husky": "^9.1.7",
     "prettier": "^3.9.8",
     "style-loader": "^4.0.0",
     "ts-loader": "^9.6.2",
