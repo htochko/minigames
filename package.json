@@ -3,7 +3,7 @@
   "scripts": {
     "format": "prettier --write \"src/**/*.{ts,tsx,js,json,css,html}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,json,css,html}\"",
-    "lint": "eslint .",
+    "lint": "eslint ./src",
     "build": "webpack",
     "start": "webpack serve --mode development",
     "prepare": "husky"
