@@ -1,5 +1,5 @@
 import path from "node:path";
-import { fileURLToPath } from "url";
+import { fileURLToPath } from "node:url";
 import webpack from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 
@@ -49,12 +49,10 @@ const config: webpack.Configuration = {
   },
 };
 
-export default (env, argv) => {
+export default (environment, argv) => {
   if (argv.mode === "development") {
     // ...
-  }
-
-  if (argv.mode === "production") {
+  } else if (argv.mode === "production") {
     // ...
   }
 
