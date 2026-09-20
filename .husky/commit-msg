@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run validation using Node.js to ensure cross-platform compatibility
+node -e '
+  const fs = require("fs");
+  const commitMsgFile = process.argv[1];
+  const msg = fs.readFileSync(commitMsgFile, "utf8").trim();
+
+  // Regex breakdown:
+  // - Allowed types: feat, fix, hotfix, refactor, docs, style, test, perf, build, ci, chore
+  // - Optional scope: e.g., (auth)
+  // - Mandatory colon and description: e.g., : add login functionality
+  const pattern = /^(feat|fix|hotfix|refactor|docs|style|test|perf|build|ci|chore)(\([a-zA-Z0-9_-]+\))?: \S+.*/;
+
+  if (!pattern.test(msg)) {
+    console.error("\n❌ Error: Invalid commit message format!");
+    console.error("--------------------------------------------------");
+    console.error("Expected format: <type>[optional scope]: <description>");
+    console.error("Allowed types  : feat, fix, hotfix, refactor, docs, style, test, perf, build, ci, chore");
+    console.error("Examples       : feat(auth): add login page");
+    console.error("                 fix: resolve crash on startup");
+    console.error("--------------------------------------------------\n");
+    process.exit(1);
+  }
+' "$1"
