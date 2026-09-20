@@ -20,6 +20,8 @@
     "html-webpack-plugin": "^5.6.8",
     "husky": "^9.1.7",
     "prettier": "^3.9.8",
+    "sass": "^1.104.1",
+    "sass-loader": "^17.0.1",
     "style-loader": "^4.0.0",
     "ts-loader": "^9.6.2",
     "ts-node": "^10.9.2",
@@ -28,5 +30,8 @@
     "webpack": "^5.111.1",
     "webpack-cli": "^7.2.3",
     "webpack-dev-server": "^6.0.0"
+  },
+  "allowScripts": {
+    "@parcel/watcher@2.6.0": true
   }
 }
