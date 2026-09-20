@@ -1,0 +1,34 @@
+@use './../../styles/tokens' as *;
+@use './../../styles/mixins' as *;
+
+:host {
+          display: block;
+          width: 100%;
+          box-sizing: border-box;
+          font-family: $inter;
+        }
+        .header-container {
+          margin: 0 auto;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .logo {
+          font-weight: $bold;
+          font-size: $headlline-medium;
+          color: $on-primary;
+          text-decoration: none;
+        }
+        nav {
+          display: flex;
+          gap: $headline-large;
+        }
+        nav a {
+          color: $on-bg;
+          text-decoration: none;
+          font-size: $body-medium;
+          transition: color 0.2s ease;
+        }
+        nav a:hover {
+          color: $on-primary;
+        }
