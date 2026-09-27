@@ -22,8 +22,6 @@ export class Table extends HTMLElement {
     console.log('GAMES:', this.items);
   }
 
-  
-
   private getPagedItems(): Item[] {
     const start = (this.currentPage - 1) * this.itemsPerPage;
     return this.items.slice(start, start + this.itemsPerPage);
@@ -45,9 +43,11 @@ export class Table extends HTMLElement {
 
   private changePage(delta: number) {
     const newPage = this.currentPage + delta;
-    if (!(newPage >= 1 && newPage <= this.getTotalPages())) { return; }
-      this.currentPage = newPage;
-      this.render();
+    if (!(newPage >= 1 && newPage <= this.getTotalPages())) {
+      return;
+    }
+    this.currentPage = newPage;
+    this.render();
   }
 
   private render() {
@@ -103,7 +103,9 @@ export class Table extends HTMLElement {
     // Card click handlers
     this.shadowRoot.querySelectorAll('.card').forEach((cardElement) => {
       cardElement.addEventListener('click', () => {
-        if (!(cardElement instanceof HTMLElement)) { return; }
+        if (!(cardElement instanceof HTMLElement)) {
+          return;
+        }
         const slug = cardElement.dataset.id;
         const item = this.items.find((item) => item.slug === slug);
         if (item) this.openModal(item);

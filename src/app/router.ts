@@ -16,10 +16,14 @@ export class Router {
     document.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
       const anchor = target.closest('a');
-      if (!anchor || !anchor.dataset?.link) { return; }
+      if (!anchor || !anchor.dataset?.link) {
+        return;
+      }
       event.preventDefault();
       const href = anchor.getAttribute('href');
-      if (href === null) { return; }
+      if (href === null) {
+        return;
+      }
       const cleanPath = href.startsWith('#') ? href.slice(1) : href;
       this.navigateTo(cleanPath);
     });
