@@ -2,19 +2,30 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import webpack from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 // in case you run into any TypeScript error when configuring `devServer`
 import "webpack-dev-server";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 const componentsDirectory = path.resolve(__dirname, 'src/components');
+const pagesDirectory = path.resolve(__dirname, 'src/pages');
 
 const config: webpack.Configuration = {
   entry: "./src/app/index.ts",
   plugins: [
     new HtmlWebpackPlugin({
         template: './src/index.html', // html template
+    }),
+    new CopyWebpackPlugin({
+        patterns: [
+          { 
+            from: path.resolve(__dirname, 'src/assets'), 
+            to: path.resolve(__dirname, 'dist/assets') 
+          },
+        ],
     }),
   ],
   module: {
@@ -34,7 +45,7 @@ const config: webpack.Configuration = {
       },
       {
         test: /\.scss$/,
-        include: [componentsDirectory],
+        include: [componentsDirectory, pagesDirectory],
         use: [
           {
           loader: 'css-loader',
@@ -47,7 +58,7 @@ const config: webpack.Configuration = {
       },
       {
         test: /\.s[ac]ss$/,
-        exclude: [componentsDirectory],
+        exclude: [componentsDirectory, pagesDirectory],
         use: ["style-loader", "css-loader", "sass-loader"],
       },
     ],
@@ -62,7 +73,15 @@ const config: webpack.Configuration = {
   },
   mode: 'production', // Set Webpack mode (development or production),
   devServer: {
-    static: path.resolve(__dirname, 'dist'), // Serve static files from the 'dist' directory
+    static: [
+        {
+          directory: path.join(__dirname, 'dist'),
+        },
+        {
+          directory: path.join(__dirname, 'src/assets'),
+          publicPath: '/assets', // Maps requests to /assets/... directly to src/assets/...
+        },
+      ],
     port: 3000, // Serve the app on http://localhost:3000
     open: true, // Automatically opens the browser when the server starts
   },

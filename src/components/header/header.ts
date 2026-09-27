@@ -21,8 +21,8 @@ export class Header extends HTMLElement {
 
         <!-- Wrapped container for links that go into the mobile burger menu -->
         <div class="nav-links-wrapper">
-            <li><a href="#" data-link>Home</a></li>
-            <li><a href="#library" data-link>Library</a></li>
+            <li><a href="#/" data-link>Home</a></li>
+            <li><a href="#/library" data-link>Library</a></li>
             <li><a href="#tournaments">Tournaments</a></li>
             <li><a href="#community">Community</a></li>
             <li><a href="#login" class="btn-primary">Log in</a></li>
