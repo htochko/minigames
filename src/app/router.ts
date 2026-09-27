@@ -14,7 +14,7 @@ export class Router {
     this.rootElement = rootElement;
 
     // Listen to browser back/forward navigation
-    //globalThis.addEventListener('popstate', () => this.handleRoute());
+    globalThis.addEventListener('popstate', () => this.handleRoute());
 
     // Intercept global clicks on relative link
     // move functionality to button hanler not global click
@@ -23,21 +23,22 @@ export class Router {
     //  console.log('check',target);
     //});
 
-    const navLinks = document.querySelectorAll<HTMLAnchorElement>('a');
+    const navLinks =
+      document.querySelectorAll<HTMLAnchorElement>('a[data-link]');
     navLinks.forEach((a) => {
       a.addEventListener('click', (event) => {
         event.preventDefault();
         const href = (event.target as HTMLAnchorElement).href;
-        console.log(href);
-        //this.go(href);
+        const pathToNavigate = href.replace('#', '/');
+        console.log('CLICK', pathToNavigate);
+        this.navigateTo(pathToNavigate);
       });
     });
-
-    // It listen for history changes
+    /** 
+    // listener for history changes
     globalThis.addEventListener('popstate', (event) => {
-      console.log(event.target);
+      console.log(event.target, 'POPSTATE HAPPEN');
       const routeName = location.hash;
-      console.log(routeName);
       if (routeName == '#') {
         this.addRoute('/', 'home-page');
       }
@@ -45,9 +46,9 @@ export class Router {
         this.addRoute('/library', 'library-page');
       }
     });
-
+    */
     // Process initial URL
-    //this.go(location.pathname);
+    this.navigateTo(location.hash.replace('#', '/'));
   }
 
   public addRoute(path: string, tagName: string): void {
@@ -60,11 +61,10 @@ export class Router {
   }
 
   public async handleRoute(): Promise<void> {
-    const currentPath = globalThis.location.pathname;
     const matchedRoute = this.routes.find(
-      (route) => route.path === currentPath
+      (route) => route.path === (location.hash.replace('#', '/') || '/')
     );
-
+    console.log('machedRote:', matchedRoute);
     // Optional route guards (e.g., authentication checks)
     if (matchedRoute && matchedRoute.onBeforeEnter) {
       const canEnter = await matchedRoute.onBeforeEnter();
@@ -72,7 +72,6 @@ export class Router {
     }
 
     const tagName = matchedRoute ? matchedRoute.tagName : 'not-found-view';
-
     // Clear previous view and render the new component
     this.rootElement.replaceChildren(``);
     const pageElement = document.createElement(tagName);
