@@ -1,9 +1,9 @@
-//type RouteHandler = () => void;
+type RouteHandler = () => void;
 
 interface Route {
   path: string;
   tagName: string;
-  onBeforeEnter?: () => boolean | Promise<boolean> | undefined; // Optional route guard
+  onBeforeEnter?: () => boolean | Promise<boolean> | undefined;
 }
 
 export class Router {
@@ -13,68 +13,56 @@ export class Router {
   constructor(rootElement: HTMLElement) {
     this.rootElement = rootElement;
 
-    // Listen to browser back/forward navigation
-    globalThis.addEventListener('popstate', () => this.handleRoute());
+    globalThis.addEventListener('hashchange', () => this.handleRoute());
 
-    // Intercept global clicks on relative link
-    // move functionality to button hanler not global click
-    //document.addEventListener('click', (event: MouseEvent) => {
-    //  const target = event.target as HTMLElement;
-    //  console.log('check',target);
-    //});
-
-    const navLinks =
-      document.querySelectorAll<HTMLAnchorElement>('a[data-link]');
-    navLinks.forEach((a) => {
-      a.addEventListener('click', (event) => {
-        event.preventDefault();
-        const href = (event.target as HTMLAnchorElement).href;
-        const pathToNavigate = href.replace('#', '/');
-        console.log('CLICK', pathToNavigate);
-        this.navigateTo(pathToNavigate);
-      });
-    });
-    /** 
-    // listener for history changes
-    globalThis.addEventListener('popstate', (event) => {
-      console.log(event.target, 'POPSTATE HAPPEN');
-      const routeName = location.hash;
-      if (routeName == '#') {
-        this.addRoute('/', 'home-page');
-      }
-      if (routeName == '#library') {
-        this.addRoute('/library', 'library-page');
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest('a');
+      
+      if (anchor && anchor.hasAttribute('data-link')) {
+        e.preventDefault();
+        const href = anchor.getAttribute('href');
+        if (href) {
+          const cleanPath = href.startsWith('#') ? href.slice(1) : href;
+          this.navigateTo(cleanPath);
+        }
       }
     });
-    */
-    // Process initial URL
-    this.navigateTo(location.hash.replace('#', '/'));
   }
 
-  public addRoute(path: string, tagName: string): void {
-    this.routes.push({ path, tagName });
+  public addRoute(
+    path: string, 
+    tagName: string, 
+    onBeforeEnter?: () => boolean | Promise<boolean> | undefined
+  ): void {
+    // Construct the route object conditionally to satisfy exactOptionalPropertyTypes
+    const route: Route = { path, tagName };
+    if (onBeforeEnter) {
+      route.onBeforeEnter = onBeforeEnter;
+    }
+    this.routes.push(route);
   }
 
-  public navigateTo(path: string | null): void {
-    globalThis.history.pushState({}, '', path);
-    this.handleRoute();
+  public navigateTo(path: string): void {
+    const hashPath = path.startsWith('#') ? path : `#${path}`;
+    globalThis.location.hash = hashPath;
   }
 
   public async handleRoute(): Promise<void> {
-    const matchedRoute = this.routes.find(
-      (route) => route.path === (location.hash.replace('#', '/') || '/')
-    );
-    console.log('machedRote:', matchedRoute);
-    // Optional route guards (e.g., authentication checks)
+    const hash = globalThis.location.hash;
+    const currentPath = hash ? hash.replace('#', '') : '/';
+    
+    const matchedRoute = this.routes.find((route) => route.path === currentPath);
+
     if (matchedRoute && matchedRoute.onBeforeEnter) {
       const canEnter = await matchedRoute.onBeforeEnter();
-      if (!canEnter) return; // Guard blocked navigation
+      if (canEnter === false) return;
     }
 
     const tagName = matchedRoute ? matchedRoute.tagName : 'not-found-view';
-    // Clear previous view and render the new component
-    this.rootElement.replaceChildren(``);
+
+    this.rootElement.innerHTML = '';
     const pageElement = document.createElement(tagName);
-    this.rootElement.append(pageElement);
+    this.rootElement.appendChild(pageElement);
   }
 }

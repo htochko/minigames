@@ -16,13 +16,14 @@ export class HomePage extends HTMLElement {
       <div>
       <h2>Take a short Breack & Have a fun</h2>
         <p>Discover hundreds of curated casual mini-games. Play instantly in your browser — puzzle, match 3, farm, and board classics.</p>
-        <a href="#library" data-link>Browse Library</a>
+        <a href="#/library" data-link>Browse Library</a>
       </div>
       </section>
       <section>
       <h2>New Games</h2>
       <div div="slider">Slider goes here</div>
       </section>
+      <data-table>
     `;
   }
 }
