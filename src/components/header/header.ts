@@ -14,7 +14,7 @@ export class Header extends HTMLElement {
         <a href="#" class="logo">MiniGames</a>
         <nav>
           <a href="#">Home</a>
-          <a href="#library">Library</a>
+          <a href="#library" data-link>Library</a>
           <a href="#tournaments">Tournaments</a>
           <a href="#community">Community</a> 
           <a href="#" class="btn-primary">Login</a>
