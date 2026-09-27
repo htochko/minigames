@@ -1,5 +1,3 @@
-type RouteHandler = () => void;
-
 interface Route {
   path: string;
   tagName: string;
@@ -15,18 +13,15 @@ export class Router {
 
     globalThis.addEventListener('hashchange', () => this.handleRoute());
 
-    document.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
+    document.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
       const anchor = target.closest('a');
-
-      if (anchor && anchor.hasAttribute('data-link')) {
-        e.preventDefault();
-        const href = anchor.getAttribute('href');
-        if (href) {
-          const cleanPath = href.startsWith('#') ? href.slice(1) : href;
-          this.navigateTo(cleanPath);
-        }
-      }
+      if (!anchor || !anchor.dataset?.link) { return; }
+      event.preventDefault();
+      const href = anchor.getAttribute('href');
+      if (href === null) { return; }
+      const cleanPath = href.startsWith('#') ? href.slice(1) : href;
+      this.navigateTo(cleanPath);
     });
   }
 
@@ -63,8 +58,8 @@ export class Router {
 
     const tagName = matchedRoute ? matchedRoute.tagName : 'not-found-view';
 
-    this.rootElement.innerHTML = '';
+    this.rootElement.replaceChildren();
     const pageElement = document.createElement(tagName);
-    this.rootElement.appendChild(pageElement);
+    this.rootElement.append(pageElement);
   }
 }

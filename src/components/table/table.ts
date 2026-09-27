@@ -11,7 +11,7 @@ interface Item {
 export class Table extends HTMLElement {
   private currentPage: number = 1;
   private itemsPerPage: number = 6;
-  private selectedItem: Item | null = null;
+  private selectedItem: Item | null | undefined = undefined;
 
   // Mock dataset (14 items to demonstrate multi-page pagination)
   private items: Item[] = games.data as unknown as Item[];
@@ -22,9 +22,7 @@ export class Table extends HTMLElement {
     console.log('GAMES:', this.items);
   }
 
-  connectedCallback() {
-    this.render();
-  }
+  
 
   private getPagedItems(): Item[] {
     const start = (this.currentPage - 1) * this.itemsPerPage;
@@ -41,16 +39,15 @@ export class Table extends HTMLElement {
   }
 
   private closeModal() {
-    this.selectedItem = null;
+    this.selectedItem = undefined;
     this.render();
   }
 
   private changePage(delta: number) {
     const newPage = this.currentPage + delta;
-    if (newPage >= 1 && newPage <= this.getTotalPages()) {
+    if (!(newPage >= 1 && newPage <= this.getTotalPages())) { return; }
       this.currentPage = newPage;
       this.render();
-    }
   }
 
   private render() {
@@ -104,33 +101,38 @@ export class Table extends HTMLElement {
     if (!this.shadowRoot) return;
 
     // Card click handlers
-    this.shadowRoot.querySelectorAll('.card').forEach((cardEl) => {
-      cardEl.addEventListener('click', () => {
-        const slug = cardEl.getAttribute('data-id');
-        const item = this.items.find((i) => i.slug === slug);
+    this.shadowRoot.querySelectorAll('.card').forEach((cardElement) => {
+      cardElement.addEventListener('click', () => {
+        if (!(cardElement instanceof HTMLElement)) { return; }
+        const slug = cardElement.dataset.id;
+        const item = this.items.find((item) => item.slug === slug);
         if (item) this.openModal(item);
       });
     });
 
     // Pagination handlers
     this.shadowRoot
-      .getElementById('prev-btn')
+      .querySelector('#prev-btn')
       ?.addEventListener('click', () => this.changePage(-1));
     this.shadowRoot
-      .getElementById('next-btn')
+      .querySelector('#next-btn')
       ?.addEventListener('click', () => this.changePage(1));
 
     // Modal close handlers
     this.shadowRoot
-      .getElementById('modal-close')
+      .querySelector('#modal-close')
       ?.addEventListener('click', () => this.closeModal());
     this.shadowRoot
       .querySelector('.modal-overlay')
-      ?.addEventListener('click', (e) => {
-        if ((e.target as HTMLElement).classList.contains('modal-overlay')) {
+      ?.addEventListener('click', (event) => {
+        if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
           this.closeModal();
         }
       });
+  }
+
+  connectedCallback() {
+    this.render();
   }
 }
 

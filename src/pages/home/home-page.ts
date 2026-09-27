@@ -23,7 +23,6 @@ export class HomePage extends HTMLElement {
       <h2>New Games</h2>
       <div div="slider">Slider goes here</div>
       </section>
-      <data-table>
     `;
   }
 }
