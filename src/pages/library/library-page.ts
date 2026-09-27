@@ -1,5 +1,5 @@
 import styles from './library-page.scss';
-// import datatable paginated list with filter 
+// import datatable paginated list with filter
 
 export class LibraryPage extends HTMLElement {
   constructor() {

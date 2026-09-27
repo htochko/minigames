@@ -22,28 +22,28 @@ export class Router {
     //  const target = event.target as HTMLElement;
     //  console.log('check',target);
     //});
-    
-    const navLinks = document.querySelectorAll<HTMLAnchorElement>("a");
+
+    const navLinks = document.querySelectorAll<HTMLAnchorElement>('a');
     navLinks.forEach((a) => {
-      a.addEventListener("click", (event) => {
+      a.addEventListener('click', (event) => {
         event.preventDefault();
         const href = (event.target as HTMLAnchorElement).href;
-        console.log(href)
+        console.log(href);
         //this.go(href);
       });
     });
 
     // It listen for history changes
-    globalThis.addEventListener("popstate", (event) => {
-        console.log(event.target);
-        const routeName = location.hash;
-        console.log(routeName);
-        if (routeName == '#') {
-            this.addRoute('/', 'home-page');
-        }
-        if (routeName == '#library') {
-            this.addRoute('/library', 'library-page');
-        }
+    globalThis.addEventListener('popstate', (event) => {
+      console.log(event.target);
+      const routeName = location.hash;
+      console.log(routeName);
+      if (routeName == '#') {
+        this.addRoute('/', 'home-page');
+      }
+      if (routeName == '#library') {
+        this.addRoute('/library', 'library-page');
+      }
     });
 
     // Process initial URL
@@ -51,7 +51,7 @@ export class Router {
   }
 
   public addRoute(path: string, tagName: string): void {
-    this.routes.push({ path, tagName});
+    this.routes.push({ path, tagName });
   }
 
   public navigateTo(path: string | null): void {
@@ -61,7 +61,9 @@ export class Router {
 
   public async handleRoute(): Promise<void> {
     const currentPath = globalThis.location.pathname;
-    const matchedRoute = this.routes.find((route) => route.path === currentPath);
+    const matchedRoute = this.routes.find(
+      (route) => route.path === currentPath
+    );
 
     // Optional route guards (e.g., authentication checks)
     if (matchedRoute && matchedRoute.onBeforeEnter) {
