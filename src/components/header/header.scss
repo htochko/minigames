@@ -1,34 +1,163 @@
 @use './../../styles/tokens' as *;
 @use './../../styles/mixins' as *;
+@use './../../styles/constants' as *;
 
 :host {
-          display: block;
-          width: 100%;
-          box-sizing: border-box;
-          font-family: $inter;
-        }
-        .header-container {
-          margin: 0 auto;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .logo {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: $inter;
+}
+
+/* Base Navbar Styling */
+.navbar ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0 1.5rem;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Hide burger toggle checkbox by default */
+.burger-toggle {
+    display: none;
+}
+
+/* 1. First item (Logo) pinned to the left */
+.logo-item {
+    margin-right: auto;
+}
+
+/* 2. Middle links centered */
+.nav-links-wrapper {
+    display: flex;
+    gap: 1.5rem;
+    margin: 0 auto; /* Pushes it to the center in flex layout */
+}
+
+/* 3. Right items (Theme, Burger, Menu) */
+.nav-right-items {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-left: auto;
+}
+
+/* Burger button hidden on desktop */
+.burger-item {
+    display: none;
+}
+
+/* General Link Styling */
+.navbar a {
+    text-decoration: none;
+    color: var(--primary-text);
+    cursor: pointer;
+}
+
+/* General Link Styling */
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+@media screen and (max-width: 768px) {
+    .navbar ul {
+        justify-content: space-between;
+        position: relative;
+    }
+
+    /* Reset margins for mobile flex layout */
+    .logo-item {
+        margin-right: 0;
+    }
+    
+    .nav-links-wrapper, .menu-item {
+        margin: 0;
+        display: none; /* Hidden by default, toggled via checkbox */
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        flex-direction: column;
+        background-color: #fff;
+        padding: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        text-align: center;
+        gap: 1rem;
+    }
+
+    /* Show burger button icon on mobile */
+    .burger-item {
+        display: block;
+    }
+
+    /* Style the burger icon lines */
+    .burger-btn {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 24px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .burger-btn span {
+        display: block;
+        height: 2px;
+        width: 100%;
+        background-color: #333;
+        transition: 0.3s;
+    }
+
+    /* When checkbox is checked, drop down the mobile menu */
+    .burger-toggle:checked ~ ul .nav-links-wrapper {
+        display: flex;
+    }
+
+    /* Optional: Animate burger to an 'X' when open */
+    .burger-toggle:checked ~ ul .burger-btn span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    .burger-toggle:checked ~ ul .burger-btn span:nth-child(2) {
+        opacity: 0;
+    }
+    .burger-toggle:checked ~ ul .burger-btn span:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+    section#hero {
+        padding: 1em 1em 1em 1em;
+    }
+    /* Hide arrows on mobile if you rely purely on swiping, or keep them small */
+    .slider-btn { display: none; }
+
+    /* about section : gallery */
+    .gallery-grid, footer {
+        grid-template-columns: 1fr; /* Switch to 1 column */
+    }
+
+    .img-wrapper.secondary {
+        display: none;
+    }
+    .img-wrapper.primary {
+        min-height: 50vw;
+    }
+    section#mobileapp {
+    background-size: contain;
+    background-position: bottom;
+    padding: 2em 2em 50vh 2em;
+}
+}
+
+.logo {
           font-weight: $bold;
           font-size: $headlline-medium;
           color: $on-primary;
           text-decoration: none;
-        }
-        nav {
-          display: flex;
-          gap: $headline-large;
-        }
-        nav a {
-          color: $on-bg;
-          text-decoration: none;
-          font-size: $body-medium;
-          transition: color 0.2s ease;
-        }
-        nav a:hover {
-          color: $on-primary;
+          background-image: url('./../../assets/icons/favicon.svg');
+          background-repeat: no-repeat;
+          padding-left: calc($headline-large + $size-1);
+          line-height: $headline-large;
+          max-height: $size-4;
         }

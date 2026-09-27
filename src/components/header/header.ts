@@ -11,15 +11,35 @@ export class Header extends HTMLElement {
     headerElement.innerHTML = `
       <style>${styles}</style>
       <header class="header-container">
-        <a href="#" class="logo">MiniGames</a>
-        <nav>
-          <a href="#">Home</a>
-          <a href="#library" data-link>Library</a>
-          <a href="#tournaments">Tournaments</a>
-          <a href="#community">Community</a> 
-          <a href="#" class="btn-primary">Login</a>
-          <a href="#" class="btn-primary">Sign up</a>
-        </nav>
+        <nav class="navbar">
+        <input type="checkbox" id="burger-toggle" class="burger-toggle">
+    <ul>
+        <!-- 1. Parked to the Left -->
+        <li class="logo">
+            <a href="#">Minigames</a>
+        </li>
+
+        <!-- Wrapped container for links that go into the mobile burger menu -->
+        <div class="nav-links-wrapper">
+            <li><a href="#" data-link>Home</a></li>
+            <li><a href="#library" data-link>Library</a></li>
+            <li><a href="#tournaments">Tournaments</a></li>
+            <li><a href="#community">Community</a></li>
+            <li><a href="#login" class="btn-primary">Log in</a></li>
+            <li><a href="#sugnup" class="btn-primary">Sign up</a></li>
+        </div>
+        <div class="nav-right-items">
+            <!-- Burger Icon Label (Visible only on mobile) -->
+            <li class="burger-item">
+                <label for="burger-toggle" class="burger-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </label>
+            </li>
+        </div>
+    </ul>
+</nav>        
       </header>
     `;
 
