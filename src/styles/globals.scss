@@ -1,0 +1,11 @@
+@use 'tokens';
+@use 'mixins';
+
+body {
+  background-color: tokens.$bg;
+  color: tokens.$on-bg;
+  font-family: tokens.$inter;
+}
+main {
+  min-height: 100vh;
+}
