@@ -18,7 +18,7 @@ export class Router {
     document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
       const anchor = target.closest('a');
-      
+
       if (anchor && anchor.hasAttribute('data-link')) {
         e.preventDefault();
         const href = anchor.getAttribute('href');
@@ -31,8 +31,8 @@ export class Router {
   }
 
   public addRoute(
-    path: string, 
-    tagName: string, 
+    path: string,
+    tagName: string,
     onBeforeEnter?: () => boolean | Promise<boolean> | undefined
   ): void {
     // Construct the route object conditionally to satisfy exactOptionalPropertyTypes
@@ -51,8 +51,10 @@ export class Router {
   public async handleRoute(): Promise<void> {
     const hash = globalThis.location.hash;
     const currentPath = hash ? hash.replace('#', '') : '/';
-    
-    const matchedRoute = this.routes.find((route) => route.path === currentPath);
+
+    const matchedRoute = this.routes.find(
+      (route) => route.path === currentPath
+    );
 
     if (matchedRoute && matchedRoute.onBeforeEnter) {
       const canEnter = await matchedRoute.onBeforeEnter();

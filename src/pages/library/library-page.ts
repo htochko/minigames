@@ -5,9 +5,9 @@ import { registerDataTable } from '../../components/table/table';
 export class LibraryPage extends HTMLElement {
   constructor() {
     super();
-    registerDataTable()
+    registerDataTable();
     const shadow = this.attachShadow({ mode: 'open' });
-    console.log('style:', styles)
+    console.log('style:', styles);
     shadow.innerHTML = `
       <style>${styles}</style>
       <section>

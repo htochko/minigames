@@ -1,7 +1,6 @@
 import styles from './table.scss';
 import games from './../../data/all-games-seed.json';
 
-
 interface Item {
   slug: string;
   name: string;
@@ -16,11 +15,11 @@ export class Table extends HTMLElement {
 
   // Mock dataset (14 items to demonstrate multi-page pagination)
   private items: Item[] = games.data as unknown as Item[];
-  
+
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    console.log('GAMES:',this.items);
+    console.log('GAMES:', this.items);
   }
 
   connectedCallback() {
@@ -77,7 +76,8 @@ export class Table extends HTMLElement {
               <p class="card-snippet">${item.shortDescription}</p>
             </div>
           </div>
-        `)
+        `
+          )
           .join('')}
       </div>
 
@@ -113,16 +113,24 @@ export class Table extends HTMLElement {
     });
 
     // Pagination handlers
-    this.shadowRoot.getElementById('prev-btn')?.addEventListener('click', () => this.changePage(-1));
-    this.shadowRoot.getElementById('next-btn')?.addEventListener('click', () => this.changePage(1));
+    this.shadowRoot
+      .getElementById('prev-btn')
+      ?.addEventListener('click', () => this.changePage(-1));
+    this.shadowRoot
+      .getElementById('next-btn')
+      ?.addEventListener('click', () => this.changePage(1));
 
     // Modal close handlers
-    this.shadowRoot.getElementById('modal-close')?.addEventListener('click', () => this.closeModal());
-    this.shadowRoot.querySelector('.modal-overlay')?.addEventListener('click', (e) => {
-      if ((e.target as HTMLElement).classList.contains('modal-overlay')) {
-        this.closeModal();
-      }
-    });
+    this.shadowRoot
+      .getElementById('modal-close')
+      ?.addEventListener('click', () => this.closeModal());
+    this.shadowRoot
+      .querySelector('.modal-overlay')
+      ?.addEventListener('click', (e) => {
+        if ((e.target as HTMLElement).classList.contains('modal-overlay')) {
+          this.closeModal();
+        }
+      });
   }
 }
 

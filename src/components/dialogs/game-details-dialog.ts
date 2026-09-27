@@ -9,7 +9,7 @@ const htmlTemplate = `
         <p id="modal-desc"></p>
         <p id="modal-price" class="price"></p>
     </div>
-`
+`;
 export class GameDetailsDialog extends HTMLElement {
   constructor() {
     super();
@@ -24,8 +24,10 @@ export class GameDetailsDialog extends HTMLElement {
   }
 }
 
-export function registerGameDetailDialog(tagName = 'game-details-dialog-template'): void {
+export function registerGameDetailDialog(
+  tagName = 'game-details-dialog-template'
+): void {
   if (!customElements.get(tagName)) {
     customElements.define(tagName, GameDetailsDialog);
   }
-}    
+}
