@@ -92,15 +92,24 @@ h2 {
   margin-top: $size-2;
 
   button {
-    background-color: $on-bg;
-    color: white;
-    border: none;
-    padding: $size-05 $size-1;
+    background-color: $white;
+    color: $on-primary;
+    border: 2px solid $black;
+    padding: 0 $size-1;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: $bold;
     transition: background-color 0.2s;
+    border-radius: $corner-full;
+    font-size: $label-extra-large;
+    height: $display-medium;
+    width: $display-medium;
+    &.active {
+        background-color: $bg-footer;
+        color: $white;
+    }
 
     &:hover:not(:disabled) {
+      color: $on-primary;
       background-color: $surface;
     }
 
@@ -202,6 +211,7 @@ h2 {
       
       &:hover {
         background-color: $surface;
+        color: $on-primary;
       }
 
       &.active {

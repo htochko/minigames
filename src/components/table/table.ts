@@ -21,7 +21,6 @@ export class Table extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    console.log('GAMES:', this.items);
   }
 
   private getCategories(): string[] {
@@ -55,6 +54,13 @@ export class Table extends HTMLElement {
     }
     this.currentPage = newPage;
     this.render();
+  }
+
+  private goToPage(page: number) {
+    const totalPages = this.getTotalPages();
+    if (!(page >= 1 && page <= totalPages)) { return; }
+      this.currentPage = page;
+      this.render();
   }
 
   private setCategory(category: string) {
@@ -114,15 +120,22 @@ export class Table extends HTMLElement {
               <p class="card-snippet">${item.shortDescription}</p>
             </div>
           </div>
-        `
-          )
+        `)
           .join('')}
       </div>
 
       <div class="pagination">
-        <button id="prev-btn" ${this.currentPage === 1 ? 'disabled' : ''}>Previous</button>
-        <span>Page ${this.currentPage} of ${totalPages}</span>
-        <button id="next-btn" ${this.currentPage === totalPages ? 'disabled' : ''}>Next</button>
+        <button class="btn-page" id="prev-btn" ${this.currentPage === 1 ? 'disabled' : ''} aria-label="previous page"><</button>
+    
+        ${Array.from({ length: totalPages }, (_, index) => index + 1)
+          .map(
+            (page) => `
+          <button class="btn-page ${page === this.currentPage ? 'active' : ''}" aria-label="page ${page}" data-page="${page}">
+            ${page}
+          </button>`
+          )
+          .join('')}
+        <button class="btn-page" id="next-btn" ${this.currentPage === totalPages ? 'disabled' : ''} aria-label>></button>
       </div>
 
       <div class="modal-overlay ${this.selectedItem ? 'active' : ''}">
@@ -160,6 +173,15 @@ export class Table extends HTMLElement {
     this.shadowRoot
       .querySelector('#next-btn')
       ?.addEventListener('click', () => this.changePage(1));
+
+      // Page number button handlers
+    this.shadowRoot.querySelectorAll('[data-page]').forEach((button) => {
+      if (!(button instanceof HTMLElement)) { return; }  
+      button.addEventListener('click', () => {
+        const page = Number(button.dataset.page);
+        if (page) this.goToPage(page);
+      });
+    });
 
     // Modal close handlers
     this.shadowRoot
