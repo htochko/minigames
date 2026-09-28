@@ -58,9 +58,11 @@ export class Table extends HTMLElement {
 
   private goToPage(page: number) {
     const totalPages = this.getTotalPages();
-    if (!(page >= 1 && page <= totalPages)) { return; }
-      this.currentPage = page;
-      this.render();
+    if (!(page >= 1 && page <= totalPages)) {
+      return;
+    }
+    this.currentPage = page;
+    this.render();
   }
 
   private setCategory(category: string) {
@@ -120,7 +122,8 @@ export class Table extends HTMLElement {
               <p class="card-snippet">${item.shortDescription}</p>
             </div>
           </div>
-        `)
+        `
+          )
           .join('')}
       </div>
 
@@ -174,9 +177,11 @@ export class Table extends HTMLElement {
       .querySelector('#next-btn')
       ?.addEventListener('click', () => this.changePage(1));
 
-      // Page number button handlers
+    // Page number button handlers
     this.shadowRoot.querySelectorAll('[data-page]').forEach((button) => {
-      if (!(button instanceof HTMLElement)) { return; }  
+      if (!(button instanceof HTMLElement)) {
+        return;
+      }
       button.addEventListener('click', () => {
         const page = Number(button.dataset.page);
         if (page) this.goToPage(page);
