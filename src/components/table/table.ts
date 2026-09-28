@@ -12,6 +12,8 @@ export class Table extends HTMLElement {
   private currentPage: number = 1;
   private itemsPerPage: number = 6;
   private selectedItem: Item | null | undefined = undefined;
+  private currentCategory: string = 'All categories';
+  private currentSort: string = 'rating-desc';
 
   // Mock dataset (14 items to demonstrate multi-page pagination)
   private items: Item[] = games.data as unknown as Item[];
@@ -20,6 +22,11 @@ export class Table extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     console.log('GAMES:', this.items);
+  }
+
+  private getCategories(): string[] {
+    const categories = this.items.map((item) => item.category);
+    return ['All categories', ...new Set(categories)];
   }
 
   private getPagedItems(): Item[] {
@@ -50,9 +57,22 @@ export class Table extends HTMLElement {
     this.render();
   }
 
+  private setCategory(category: string) {
+    this.currentCategory = category;
+    this.currentPage = 1; // Reset to page 1 on filter change
+    this.render();
+  }
+
+  private setSort(sortValue: string) {
+    this.currentSort = sortValue;
+    this.currentPage = 1; // Reset to page 1 on sort change
+    this.render();
+  }
+
   private render() {
     if (!this.shadowRoot) return;
 
+    const categories = this.getCategories();
     const pagedItems = this.getPagedItems();
     const totalPages = this.getTotalPages();
 
@@ -60,7 +80,28 @@ export class Table extends HTMLElement {
       <style>${styles}</style>
       
       <h2>Library Collection</h2>
-      
+      <div class="control-panel">
+        <div class="filters-group">
+          ${categories
+            .map(
+              (cat) => `
+            <button class="filter-btn ${this.currentCategory === cat ? 'active' : ''}" data-category="${cat}">
+              ${cat}
+            </button>
+          `
+            )
+            .join('')}
+        </div>
+
+        <div class="sorter-group">
+          <select id="sort-select">
+            <option value="rating-desc" ${this.currentSort === 'rating-desc' ? 'selected' : ''}>Sort by: Rating ↓</option>
+            <option value="rating-asc" ${this.currentSort === 'rating-asc' ? 'selected' : ''}>Sort by: Rating ↑</option>
+            <option value="name-asc" ${this.currentSort === 'name-asc' ? 'selected' : ''}>Sort by: Name: A → Z</option>
+            <option value="name-desc" ${this.currentSort === 'name-desc' ? 'selected' : ''}>Sort by: Name: Z → A</option>
+          </select>
+        </div>
+      </div>
       <div class="cards-grid">
         ${pagedItems
           .map(
@@ -131,6 +172,17 @@ export class Table extends HTMLElement {
           this.closeModal();
         }
       });
+    // Filter handlers
+    // Category filter button handlers
+    this.shadowRoot.querySelectorAll('.filter-btn').forEach((button) => {
+      button.addEventListener('click', () => {
+        if (!(button instanceof HTMLElement)) {
+          return;
+        }
+        const category = button.dataset.category;
+        if (category) this.setCategory(category);
+      });
+    });
   }
 
   connectedCallback() {
