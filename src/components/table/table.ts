@@ -14,7 +14,7 @@ export class Table extends HTMLElement {
   private selectedItem: Item | null | undefined = undefined;
   private currentCategory: string = 'All categories';
   private currentSort: string = 'rating-desc';
-  
+
   // Mock dataset (14 items to demonstrate multi-page pagination)
   private items: Item[] = games.data as unknown as Item[];
 
@@ -26,7 +26,7 @@ export class Table extends HTMLElement {
 
   private getCategories(): string[] {
     const categories = this.items.map((item) => item.category);
-    return ['All categories', ...(new Set(categories))];
+    return ['All categories', ...new Set(categories)];
   }
 
   private getPagedItems(): Item[] {
@@ -172,11 +172,13 @@ export class Table extends HTMLElement {
           this.closeModal();
         }
       });
-      // Filter handlers
-      // Category filter button handlers
+    // Filter handlers
+    // Category filter button handlers
     this.shadowRoot.querySelectorAll('.filter-btn').forEach((button) => {
       button.addEventListener('click', () => {
-        if (!(button instanceof HTMLElement)) { return; }
+        if (!(button instanceof HTMLElement)) {
+          return;
+        }
         const category = button.dataset.category;
         if (category) this.setCategory(category);
       });
