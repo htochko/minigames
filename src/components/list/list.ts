@@ -2,13 +2,13 @@ import styles from './list.scss';
 
 // make it more abstract
 interface LeaderBoardItem {
-rank: number,
-playerName: string,
-gamesPlayed: number,
-totalScore: number,
-streakDays: number,
-favoriteGameSlug: string,
-favoriteGameName: string
+  rank: number;
+  playerName: string;
+  gamesPlayed: number;
+  totalScore: number;
+  streakDays: number;
+  favoriteGameSlug: string;
+  favoriteGameName: string;
 }
 
 // put to env var
@@ -17,7 +17,7 @@ const endpointUrl =
 
 export class List extends HTMLElement {
   private currentIndex: number = 0;
-  private items:LeaderBoardItem[] = [];
+  private items: LeaderBoardItem[] = [];
   private isLoading: boolean = true;
   private errorMessage: string | null | undefined = undefined;
 
@@ -66,8 +66,8 @@ export class List extends HTMLElement {
       <thead>
       <tbody>
         ${this.items
-            .map(
-              (item) => `
+          .map(
+            (item) => `
               <tr>
                 <td>${item.rank}</td>
                 <td>${item.playerName}</td>
@@ -79,7 +79,8 @@ export class List extends HTMLElement {
                 </td>
               </tr>
               `
-            ).join('')}
+          )
+          .join('')}
       </tbody>
       </table>
     `;
