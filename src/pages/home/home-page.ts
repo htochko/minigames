@@ -1,6 +1,6 @@
 import styles from './home-page.scss';
 // import hero
-// import slider
+import { registerFeaturedGamesSlider } from './../../components/slider/slider';
 // import list
 // import banner
 // import form dialog
@@ -8,6 +8,7 @@ import styles from './home-page.scss';
 export class HomePage extends HTMLElement {
   constructor() {
     super();
+    registerFeaturedGamesSlider();
     const shadow = this.attachShadow({ mode: 'open' });
     shadow.innerHTML = `
       <style>${styles}</style>
@@ -20,8 +21,7 @@ export class HomePage extends HTMLElement {
       </div>
       </section>
       <section>
-      <h2>New Games</h2>
-      <div div="slider">Slider goes here</div>
+      <featured-games-slider></featured-games-slider>
       </section>
     `;
   }
