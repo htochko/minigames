@@ -1,4 +1,5 @@
 {
+  "author": "helen tochko <lentochko@gmail.com> (http://htochko.github.com/)",
   "type": "module",
   "scripts": {
     "format": "prettier --write \"src/**/*.{ts,tsx,js,json,css,html}\"",
