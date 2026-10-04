@@ -7,13 +7,14 @@ interface Game {
   likesCount: string | number;
 }
 
-const endpointUrl = 'https://faxb76kxra.execute-api.eu-central-1.amazonaws.com/api';
+const endpointUrl =
+  'https://faxb76kxra.execute-api.eu-central-1.amazonaws.com/api';
 
 export class FeaturedGamesSlider extends HTMLElement {
   private currentIndex: number = 0;
   private games: Game[] = [];
   private isLoading: boolean = true;
-  private errorMessage: string | null | undefined= undefined;
+  private errorMessage: string | null | undefined = undefined;
 
   constructor() {
     super();
@@ -25,12 +26,12 @@ export class FeaturedGamesSlider extends HTMLElement {
       // Replace with your actual endpoint variable or relative API route
       const response = await fetch(`${endpointUrl}/games?featured=true`);
       if (!response.ok) throw new Error('Failed to fetch featured games');
-      
+
       const data = await response.json();
       this.games = data.data;
       console.log(this.games);
     } catch {
-      // log an error to admin 
+      // log an error to admin
     } finally {
       this.isLoading = false;
       this.render();
@@ -47,7 +48,8 @@ export class FeaturedGamesSlider extends HTMLElement {
   private prevSlide() {
     if (this.games.length === 0) return;
     // Circular decrement (loops to last item if below 0)
-    this.currentIndex = (this.currentIndex - 1 + this.games.length) % this.games.length;
+    this.currentIndex =
+      (this.currentIndex - 1 + this.games.length) % this.games.length;
     this.render();
   }
 
@@ -57,18 +59,33 @@ export class FeaturedGamesSlider extends HTMLElement {
 
     // We want 5 positions: [-2 (far left), -1 (near left), 0 (center), +1 (near right), +2 (far right)]
     const offsets = [-2, -1, 0, 1, 2];
-    
+
     return offsets.map((offset) => {
       // Modulo arithmetic to achieve seamless wrapping (e.g., after 9 comes 1)
       const index = (this.currentIndex + offset + total) % total;
       let positionClass = 'position-center';
-      
+
       switch (offset) {
-        case -2 : { positionClass = 'position-far-left'; break; }
-        case -1 : { positionClass = 'position-near-left'; break; }
-        case 0 : { positionClass = 'position-center'; break; }
-        case 1 : { positionClass = 'position-near-right'; break; }
-        case 2 :{ positionClass = 'position-far-right'; break; }
+        case -2: {
+          positionClass = 'position-far-left';
+          break;
+        }
+        case -1: {
+          positionClass = 'position-near-left';
+          break;
+        }
+        case 0: {
+          positionClass = 'position-center';
+          break;
+        }
+        case 1: {
+          positionClass = 'position-near-right';
+          break;
+        }
+        case 2: {
+          positionClass = 'position-far-right';
+          break;
+        }
       }
 
       return {
@@ -126,21 +143,29 @@ export class FeaturedGamesSlider extends HTMLElement {
     const previousButton = this.shadowRoot.querySelector('#prev-btn');
     const nextButton = this.shadowRoot.querySelector('#next-btn');
 
-   if (previousButton !== null && previousButton instanceof HTMLElement) { previousButton.addEventListener('click', () => this.prevSlide()); }
-   if (nextButton !== null && nextButton instanceof HTMLElement) { nextButton.addEventListener('click', () => this.nextSlide()); }
+    if (previousButton !== null && previousButton instanceof HTMLElement) {
+      previousButton.addEventListener('click', () => this.prevSlide());
+    }
+    if (nextButton !== null && nextButton instanceof HTMLElement) {
+      nextButton.addEventListener('click', () => this.nextSlide());
+    }
 
     // Clicking any side slide instantly rotates it to the center
     this.shadowRoot.querySelectorAll('.slide').forEach((slideElement) => {
       slideElement.addEventListener('click', () => {
-        if (!(slideElement instanceof HTMLElement)) { return; }
+        if (!(slideElement instanceof HTMLElement)) {
+          return;
+        }
         const index = Number(slideElement.dataset.index);
-        if (!Number.isNaN(index)) { return; }
-          this.currentIndex = index;
-          this.render();
+        if (!Number.isNaN(index)) {
+          return;
+        }
+        this.currentIndex = index;
+        this.render();
       });
     });
   }
-    async connectedCallback() {
+  async connectedCallback() {
     await this.fetchFeaturedGames();
     this.render();
     this.attachEventListeners();
