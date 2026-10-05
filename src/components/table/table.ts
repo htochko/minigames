@@ -16,15 +16,19 @@ interface Category {
   isDefault: true;
 }
 
+type SortOptions = 'rating-desc' | 'rating-asc' | 'name-asc' | 'name-desc';
+
 const endpointUrl =
   'https://faxb76kxra.execute-api.eu-central-1.amazonaws.com/api';
 
 export class Table extends HTMLElement {
   private currentPage: number = 1;
   private itemsPerPage: number = 6;
-  private selectedItem: Item | null | undefined = undefined;
+
   private currentCategory: string | undefined = undefined;
-  private currentSort: string = 'rating-desc';
+  private currentSort: SortOptions = 'rating-desc';
+
+  private selectedItem: Item | null | undefined = undefined;
 
   private currentIndex: number = 0;
   private items: Item[] = [];
@@ -41,7 +45,7 @@ export class Table extends HTMLElement {
 
   private async fetchItems(category = 'all', page = 1) {
     try {
-      const limit = `limit=${this.itemsPerPage}&category=${category}&page=${page}`;
+      const limit = `limit=${this.itemsPerPage}&category=${category}&page=${page}&sort=${this.currentSort}`;
       const response = await fetch(`${endpointUrl}/games?${limit}`);
       if (!response.ok) throw new Error('Failed to fetch games');
 
@@ -71,11 +75,6 @@ export class Table extends HTMLElement {
     } finally {
       this.isLoading = false;
     }
-  }
-
-  private getPagedItems(): Item[] {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    return this.items.slice(start, start + this.itemsPerPage);
   }
 
   private openModal(item: Item) {
@@ -115,9 +114,11 @@ export class Table extends HTMLElement {
     this.render();
   }
 
-  private setSort(sortValue: string) {
+  private async setSort(sortValue: SortOptions) {
     this.currentSort = sortValue;
-    this.currentPage = 1; // Reset to page 1 on sort change
+    this.currentPage = 1;
+    this.currentSort = sortValue;
+    await this.fetchItems(this.currentCategory, this.currentPage);
     this.render();
   }
 
@@ -256,6 +257,13 @@ export class Table extends HTMLElement {
         if (category) this.setCategory(category);
       });
     });
+
+    this.shadowRoot
+      .querySelector('#sort-select')
+      ?.addEventListener('change', (event) => {
+        const target = event.target as HTMLSelectElement;
+        this.setSort(target?.value as SortOptions);
+      });
   }
 
   async connectedCallback() {
