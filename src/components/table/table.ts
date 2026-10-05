@@ -125,7 +125,6 @@ export class Table extends HTMLElement {
     if (!this.shadowRoot) return;
 
     const categories = this.categories;
-    const pagedItems = this.getPagedItems();
     const totalPages = this.pagesTotal || 0;
 
     this.shadowRoot.innerHTML = `
