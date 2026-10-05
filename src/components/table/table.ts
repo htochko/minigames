@@ -1,40 +1,81 @@
 import styles from './table.scss';
-import games from './../../data/all-games-seed.json';
 
 interface Item {
   slug: string;
   name: string;
   category: string;
   shortDescription: string;
+  price: string | number;
+  rating: number;
+  likesCount: number;
 }
+
+interface Category {
+  slug: string;
+  label: string;
+  isDefault: true;
+}
+
+const endpointUrl =
+  'https://faxb76kxra.execute-api.eu-central-1.amazonaws.com/api';
 
 export class Table extends HTMLElement {
   private currentPage: number = 1;
   private itemsPerPage: number = 6;
   private selectedItem: Item | null | undefined = undefined;
-  private currentCategory: string = 'All categories';
+  private currentCategory: string | undefined = undefined;
   private currentSort: string = 'rating-desc';
 
-  // Mock dataset (14 items to demonstrate multi-page pagination)
-  private items: Item[] = games.data as unknown as Item[];
+  private currentIndex: number = 0;
+  private items: Item[] = [];
+  private itemsTotal?: number;
+  private pagesTotal?: number;
+  private categories: Category[] = [];
+  private isLoading: boolean = true;
+  private errorMessage: string | null | undefined = undefined;
 
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
   }
 
-  private getCategories(): string[] {
-    const categories = this.items.map((item) => item.category);
-    return ['All categories', ...new Set(categories)];
+  private async fetchItems(category = 'all', page = 1) {
+    try {
+      const limit = `limit=${this.itemsPerPage}&category=${category}&page=${page}`;
+      const response = await fetch(`${endpointUrl}/games?${limit}`);
+      if (!response.ok) throw new Error('Failed to fetch games');
+
+      const data = await response.json();
+      this.items = data.data;
+      this.itemsTotal = data.meta.totalItems;
+      this.pagesTotal = data.meta.totalPages;
+    } catch {
+      // log an error to admin
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  private async fetchCategories() {
+    try {
+      const response = await fetch(`${endpointUrl}/categories`);
+      if (!response.ok) throw new Error('Failed to fetch games');
+
+      const data = await response.json();
+      this.categories = data.data;
+      this.currentCategory = this.categories.find(
+        (item: Category) => item.isDefault
+      )?.slug;
+    } catch {
+      // log an error to admin
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   private getPagedItems(): Item[] {
     const start = (this.currentPage - 1) * this.itemsPerPage;
     return this.items.slice(start, start + this.itemsPerPage);
-  }
-
-  private getTotalPages(): number {
-    return Math.ceil(this.items.length / this.itemsPerPage);
   }
 
   private openModal(item: Item) {
@@ -47,27 +88,30 @@ export class Table extends HTMLElement {
     this.render();
   }
 
-  private changePage(delta: number) {
+  private async changePage(delta: number) {
     const newPage = this.currentPage + delta;
-    if (!(newPage >= 1 && newPage <= this.getTotalPages())) {
+    if (!(newPage >= 1 && newPage <= (this.pagesTotal || 0))) {
       return;
     }
     this.currentPage = newPage;
+    await this.fetchItems(this.currentCategory, this.currentPage);
     this.render();
   }
 
-  private goToPage(page: number) {
-    const totalPages = this.getTotalPages();
+  private async goToPage(page: number) {
+    const totalPages = this.pagesTotal || 0;
     if (!(page >= 1 && page <= totalPages)) {
       return;
     }
     this.currentPage = page;
+    await this.fetchItems(this.currentCategory, this.currentPage);
     this.render();
   }
 
-  private setCategory(category: string) {
+  private async setCategory(category: string) {
     this.currentCategory = category;
     this.currentPage = 1; // Reset to page 1 on filter change
+    await this.fetchItems(category, this.currentPage);
     this.render();
   }
 
@@ -80,9 +124,8 @@ export class Table extends HTMLElement {
   private render() {
     if (!this.shadowRoot) return;
 
-    const categories = this.getCategories();
-    const pagedItems = this.getPagedItems();
-    const totalPages = this.getTotalPages();
+    const categories = this.categories;
+    const totalPages = this.pagesTotal || 0;
 
     this.shadowRoot.innerHTML = `
       <style>${styles}</style>
@@ -92,9 +135,9 @@ export class Table extends HTMLElement {
         <div class="filters-group">
           ${categories
             .map(
-              (cat) => `
-            <button class="filter-btn ${this.currentCategory === cat ? 'active' : ''}" data-category="${cat}">
-              ${cat}
+              ({ slug }) => `
+            <button class="filter-btn ${this.currentCategory === slug ? 'active' : ''}" data-category="${slug}">
+              ${slug}
             </button>
           `
             )
@@ -111,7 +154,7 @@ export class Table extends HTMLElement {
         </div>
       </div>
       <div class="cards-grid">
-        ${pagedItems
+        ${this.items
           .map(
             (item) => `
           <div class="card" data-id="${item.slug}">
@@ -126,8 +169,9 @@ export class Table extends HTMLElement {
           )
           .join('')}
       </div>
-
-      <div class="pagination">
+      ${
+        totalPages > 1
+          ? `<div class="pagination">
         <button class="btn-page" id="prev-btn" ${this.currentPage === 1 ? 'disabled' : ''} aria-label="previous page"><</button>
     
         ${Array.from({ length: totalPages }, (_, index) => index + 1)
@@ -139,8 +183,10 @@ export class Table extends HTMLElement {
           )
           .join('')}
         <button class="btn-page" id="next-btn" ${this.currentPage === totalPages ? 'disabled' : ''} aria-label>></button>
-      </div>
-
+      </div>`
+          : ''
+      }
+      
       <div class="modal-overlay ${this.selectedItem ? 'active' : ''}">
         <div class="modal-dialog">
           <button class="close-btn" id="modal-close">&times;</button>
@@ -212,8 +258,11 @@ export class Table extends HTMLElement {
     });
   }
 
-  connectedCallback() {
+  async connectedCallback() {
+    await this.fetchCategories();
+    await this.fetchItems(this.currentCategory, 1);
     this.render();
+    this.attachEventListeners();
   }
 }
 
