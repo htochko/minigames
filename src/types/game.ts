@@ -1,14 +1,14 @@
 export interface Game {
-    slug: string;
-    name: string;
-    category: string;
-    shortDescription: string;
-    price: string | number;
-    rating: number;
-    likesCount: number;
+  slug: string;
+  name: string;
+  category: string;
+  shortDescription: string;
+  price: string | number;
+  rating: number;
+  likesCount: number;
 }
 
 export interface GameDetail extends Game {
-    heroImage: string;
-    fullDescription: string;
+  heroImage: string;
+  fullDescription: string;
 }

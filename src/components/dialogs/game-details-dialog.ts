@@ -40,7 +40,7 @@ export class GameDetailsDialog extends HTMLElement {
             />
             <div class="modal-header-meta">
               <h3>${this.gameData.name}</h3>
-              ${this.gameData.likesCount ? `<span class="like">${(this.gameData.likesCount/100).toFixed(1)}K</span>` : ''}
+              ${this.gameData.likesCount ? `<span class="like">${(this.gameData.likesCount / 100).toFixed(1)}K</span>` : ''}
               ${this.gameData.rating ? `<span class="rating">★ ${this.gameData.rating.toFixed(1)}</span>` : ''}
             </div>
             
