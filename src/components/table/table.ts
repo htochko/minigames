@@ -18,8 +18,7 @@ interface Category {
 
 type SortOptions = 'rating-desc' | 'rating-asc' | 'name-asc' | 'name-desc';
 
-const endpointUrl =
-  'https://faxb76kxra.execute-api.eu-central-1.amazonaws.com/api';
+const endpointUrl = process.env.API_ENDPOINT;
 
 export class Table extends HTMLElement {
   private currentPage: number = 1;
@@ -75,16 +74,6 @@ export class Table extends HTMLElement {
     } finally {
       this.isLoading = false;
     }
-  }
-
-  private openModal(item: Item) {
-    this.selectedItem = item;
-    this.render();
-  }
-
-  private closeModal() {
-    this.selectedItem = undefined;
-    this.render();
   }
 
   private async changePage(delta: number) {
@@ -158,7 +147,7 @@ export class Table extends HTMLElement {
         ${this.items
           .map(
             (item) => `
-          <div class="card" data-id="${item.slug}">
+          <div class="card" data-slug="${item.slug}">
             <img class="card-image" src="/assets/images/games/${item.slug}-card.jpg" alt="${item.name} cover" loading="lazy" />
             <div class="card-body">
               <h3 class="card-title">${item.name}</h3>
@@ -187,15 +176,6 @@ export class Table extends HTMLElement {
       </div>`
           : ''
       }
-      
-      <div class="modal-overlay ${this.selectedItem ? 'active' : ''}">
-        <div class="modal-dialog">
-          <button class="close-btn" id="modal-close">&times;</button>
-          <h3 id="modal-title">${this.selectedItem?.name || ''}</h3>
-          
-          <p id="modal-desc">${this.selectedItem?.shortDescription || ''}</p>
-        </div>
-      </div>
     `;
 
     this.attachEventListeners();
@@ -203,18 +183,6 @@ export class Table extends HTMLElement {
 
   private attachEventListeners() {
     if (!this.shadowRoot) return;
-
-    // Card click handlers
-    this.shadowRoot.querySelectorAll('.card').forEach((cardElement) => {
-      cardElement.addEventListener('click', () => {
-        if (!(cardElement instanceof HTMLElement)) {
-          return;
-        }
-        const slug = cardElement.dataset.id;
-        const item = this.items.find((item) => item.slug === slug);
-        if (item) this.openModal(item);
-      });
-    });
 
     // Pagination handlers
     this.shadowRoot
@@ -235,17 +203,6 @@ export class Table extends HTMLElement {
       });
     });
 
-    // Modal close handlers
-    this.shadowRoot
-      .querySelector('#modal-close')
-      ?.addEventListener('click', () => this.closeModal());
-    this.shadowRoot
-      .querySelector('.modal-overlay')
-      ?.addEventListener('click', (event) => {
-        if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
-          this.closeModal();
-        }
-      });
     // Filter handlers
     // Category filter button handlers
     this.shadowRoot.querySelectorAll('.filter-btn').forEach((button) => {

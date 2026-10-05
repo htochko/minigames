@@ -12,8 +12,7 @@ interface LeaderBoardItem {
 }
 
 // put to env var
-const endpointUrl =
-  'https://faxb76kxra.execute-api.eu-central-1.amazonaws.com/api';
+const endpointUrl = process.env.API_ENDPOINT;
 
 export class List extends HTMLElement {
   private currentIndex: number = 0;

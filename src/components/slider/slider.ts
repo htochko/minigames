@@ -7,8 +7,7 @@ interface Game {
   likesCount: string | number;
 }
 
-const endpointUrl =
-  'https://faxb76kxra.execute-api.eu-central-1.amazonaws.com/api';
+const endpointUrl = process.env.API_ENDPOINT;
 
 export class FeaturedGamesSlider extends HTMLElement {
   private currentIndex: number = 0;

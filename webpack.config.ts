@@ -88,11 +88,14 @@ const config: webpack.Configuration = {
 };
 
 export default (environment, argv) => {
+  const apiEndpoint = process.env.API_ENDPOINT || 'https://faxb76kxra.execute-api.eu-central-1.amazonaws.com/api'
   if (argv.mode === "development") {
     // ...
   } else if (argv.mode === "production") {
     // ...
   }
-
+  config.plugins?.push(new webpack.DefinePlugin({
+        'process.env.API_ENDPOINT': JSON.stringify(apiEndpoint),
+      }))
   return config;
 };
