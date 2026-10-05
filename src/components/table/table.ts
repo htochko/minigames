@@ -63,7 +63,9 @@ export class Table extends HTMLElement {
 
       const data = await response.json();
       this.categories = data.data;
-      this.currentCategory = (this.categories.find((item: Category) => item.isDefault))?.slug;
+      this.currentCategory = this.categories.find(
+        (item: Category) => item.isDefault
+      )?.slug;
     } catch {
       // log an error to admin
     } finally {
@@ -88,11 +90,11 @@ export class Table extends HTMLElement {
 
   private async changePage(delta: number) {
     const newPage = this.currentPage + delta;
-    if (!(newPage >= 1 && newPage <= (this.pagesTotal || 0) )) {
+    if (!(newPage >= 1 && newPage <= (this.pagesTotal || 0))) {
       return;
     }
     this.currentPage = newPage;
-    await this.fetchItems(this.currentCategory, this.currentPage)
+    await this.fetchItems(this.currentCategory, this.currentPage);
     this.render();
   }
 
@@ -109,7 +111,7 @@ export class Table extends HTMLElement {
   private async setCategory(category: string) {
     this.currentCategory = category;
     this.currentPage = 1; // Reset to page 1 on filter change
-    await this.fetchItems(category, this.currentPage)
+    await this.fetchItems(category, this.currentPage);
     this.render();
   }
 
@@ -134,7 +136,7 @@ export class Table extends HTMLElement {
         <div class="filters-group">
           ${categories
             .map(
-              ({slug}) => `
+              ({ slug }) => `
             <button class="filter-btn ${this.currentCategory === slug ? 'active' : ''}" data-category="${slug}">
               ${slug}
             </button>
@@ -168,8 +170,9 @@ export class Table extends HTMLElement {
           )
           .join('')}
       </div>
-      ${(totalPages > 1)? 
-      `<div class="pagination">
+      ${
+        totalPages > 1
+          ? `<div class="pagination">
         <button class="btn-page" id="prev-btn" ${this.currentPage === 1 ? 'disabled' : ''} aria-label="previous page"><</button>
     
         ${Array.from({ length: totalPages }, (_, index) => index + 1)
@@ -181,7 +184,8 @@ export class Table extends HTMLElement {
           )
           .join('')}
         <button class="btn-page" id="next-btn" ${this.currentPage === totalPages ? 'disabled' : ''} aria-label>></button>
-      </div>` : ''
+      </div>`
+          : ''
       }
       
       <div class="modal-overlay ${this.selectedItem ? 'active' : ''}">
@@ -257,9 +261,9 @@ export class Table extends HTMLElement {
 
   async connectedCallback() {
     await this.fetchCategories();
-    await this.fetchItems(this.currentCategory, 1)
+    await this.fetchItems(this.currentCategory, 1);
     this.render();
-    this.attachEventListeners()
+    this.attachEventListeners();
   }
 }
 
