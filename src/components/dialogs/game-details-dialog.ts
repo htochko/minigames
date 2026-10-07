@@ -1,4 +1,5 @@
 import styles from './game-details-dialog.scss';
+import { timeAgo } from '../../utils/date-formatter';
 import type { GameDetail } from '../../types/game';
 
 export class GameDetailsDialog extends HTMLElement {
@@ -7,6 +8,8 @@ export class GameDetailsDialog extends HTMLElement {
   private gameData: GameDetail | undefined = undefined;
   private isLoading: boolean = false;
   private errorMessage: string | undefined = undefined;
+  private isCommentsLoading: boolean = false;
+  private commentsErrorMessage: string | undefined = undefined;
 
   constructor() {
     super();
@@ -41,10 +44,18 @@ export class GameDetailsDialog extends HTMLElement {
             <div class="modal-header-meta">
               <h3>${this.gameData.name}</h3>
               ${this.gameData.likesCount ? `<span class="like">${(this.gameData.likesCount / 100).toFixed(1)}K</span>` : ''}
-              ${this.gameData.rating ? `<span class="rating">★ ${this.gameData.rating.toFixed(1)}</span>` : ''}
+              ${this.gameData.rating ? `<span class="rating">${this.gameData.rating.toFixed(1)}</span>` : ''}
             </div>
             
             <p>${this.gameData.fullDescription}</p>
+            <div class="specs">
+            ${Object.entries(this.gameData.specs)
+              .map(
+                ([key, value]) =>
+                  `<div class="spec"><h4>${key}</h4>${value}</div>`
+              )
+              .join('')}
+            </div>  
           `
                 : `
             <div class="error-state">
@@ -52,6 +63,36 @@ export class GameDetailsDialog extends HTMLElement {
             </div>
           `
           }
+          <div class="actions">
+              <button type="button" class="primary-btn">Play now</button>
+              <button type="button" class="secondary-btn icon-btn favorites">Add to favorites</button>
+          </div>
+                   ${
+                     this.isLoading
+                       ? `
+            <div class="loading-state">
+              <p>Loading Top Records from game details...</p>
+            </div>`
+                       : this.gameData
+                         ? `
+                <section id="top-records">
+                <h4>Top Records</h4>
+                <ul>
+                  ${this.gameData.topRecords
+                    .map(
+                      (record) =>
+                        `<li>
+                      <span>${record.playerName}</span>
+                      <span>${record.score}pts <span class="dat">${timeAgo(record.achievedAt)}</span></span>
+                      
+                    </li>`
+                    )
+                    .join('')}
+                </ul>
+                </section>
+                `
+                         : ''
+                   }
         </div>
       </div>
     `;

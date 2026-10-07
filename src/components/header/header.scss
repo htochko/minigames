@@ -8,12 +8,13 @@
   box-sizing: border-box;
   font-family: $inter;
 }
-
+ul {
+    list-style: none;
+}
 /* Base Navbar Styling */
 .navbar ul {
     display: flex;
     align-items: center;
-    list-style: none;
     margin: 0;
     padding: 0 1.5rem;
     background-color: #fff;
