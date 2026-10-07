@@ -47,7 +47,11 @@ export class GameDetailsDialog extends HTMLElement {
             <p>${this.gameData.fullDescription}</p>
             <div class="specs">
             ${Object.entries(this.gameData.specs)
-                    .map(([key, value]) => `<div class="spec"><h4>${key}</h4>${value}</div>`).join('')}
+              .map(
+                ([key, value]) =>
+                  `<div class="spec"><h4>${key}</h4>${value}</div>`
+              )
+              .join('')}
             </div>  
           `
                 : `

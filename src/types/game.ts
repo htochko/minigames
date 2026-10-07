@@ -21,7 +21,7 @@ export interface Game {
   rating: number;
   likesCount: number;
   specs: GameSpecs;
-  topRecords: TopRecord[]
+  topRecords: TopRecord[];
 }
 
 export interface GameDetail extends Game {
