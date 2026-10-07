@@ -32,7 +32,6 @@
   border: 1px solid $on-primary;
   border-radius: $corner-medium;
   max-width: $tablet-breakpoint;
-  width: 90%;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
@@ -77,24 +76,27 @@
   }
 
   .modal-header-meta {
+    margin: 0 1.5em;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: $size-05;
-
-    .badge {
-      font-size: 0.8rem;
-      background: rgba(56, 189, 248, 0.15);
-      color: $primary;
-      padding: 0.2rem 0.6rem;
-      border-radius: 4px;
-      font-weight: 500;
-    }
-
+    color: $on-primary;
+    
+    // todo - move to mixins
     .rating {
       font-size: 0.95rem;
-      color: $primary-high;
-      font-weight: 600;
+      font-weight: $bold;
+      padding-left: 1.5em;
+      background-image: url('./../../assets/icons/rating-icon.svg');
+      background-repeat: no-repeat;
+    }
+    .like {
+      font-size: 0.95rem;
+      font-weight: $bold;
+      padding-left: 1.5em;
+      background-image: url('./../../assets/icons/like-icon.svg');
+      background-repeat: no-repeat;
     }
     h3 {
       margin: 0 0 $size-05 0;
@@ -103,14 +105,34 @@
     }
   }
 
-  
-
   p {
     color: $on-bg;
     line-height: 1.6;
     margin: 0 0 $size-05 0;
+    margin: 0 1.5em;
   }
 
+  // BADGES genre, Playes, duration price
+  .specs {
+    display: flex;
+    margin: 0 1.5em;
+    justify-content: space-between;
+    align-items: center;
+    .spec {
+      padding: 1em;
+      background-color: $white;
+      border-radius: $size-1;
+      border: 1px solid $on-primary; 
+      border-width: 1px $size-05 $size-05 1px;
+      h4 {
+        line-height: 1.5em;
+        margin: 0px;
+      } 
+    }
+  }
+
+
+  // play button
   .loading-state,
   .error-state {
     text-align: center;

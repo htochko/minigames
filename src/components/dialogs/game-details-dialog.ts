@@ -41,10 +41,14 @@ export class GameDetailsDialog extends HTMLElement {
             <div class="modal-header-meta">
               <h3>${this.gameData.name}</h3>
               ${this.gameData.likesCount ? `<span class="like">${(this.gameData.likesCount / 100).toFixed(1)}K</span>` : ''}
-              ${this.gameData.rating ? `<span class="rating">★ ${this.gameData.rating.toFixed(1)}</span>` : ''}
+              ${this.gameData.rating ? `<span class="rating">${this.gameData.rating.toFixed(1)}</span>` : ''}
             </div>
             
             <p>${this.gameData.fullDescription}</p>
+            <div class="specs">
+            ${Object.entries(this.gameData.specs)
+                    .map(([key, value]) => `<div class="spec"><h4>${key}</h4>${value}</div>`).join('')}
+            </div>  
           `
                 : `
             <div class="error-state">
@@ -52,6 +56,7 @@ export class GameDetailsDialog extends HTMLElement {
             </div>
           `
           }
+          
         </div>
       </div>
     `;
