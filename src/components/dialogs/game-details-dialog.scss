@@ -114,10 +114,14 @@
 
   // BADGES genre, Playes, duration price
   .specs {
-    display: flex;
-    margin: 0 1.5em;
-    justify-content: space-between;
-    align-items: center;
+    margin: 1em 1.5em;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+
+    @media (min-width: $tablet-breakpoint) {
+    grid-template-columns: repeat(4, 1fr);
+    }
     .spec {
       padding: 1em;
       background-color: $white;
@@ -131,8 +135,14 @@
     }
   }
 
+  // play button + add to favorites section
+  .action {
+    display: block;
+    margin: 0 1.5em;
+    justify-content: space-between;
+  }
 
-  // play button
+
   .loading-state,
   .error-state {
     text-align: center;
