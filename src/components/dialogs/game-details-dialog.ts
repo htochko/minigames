@@ -9,7 +9,7 @@ export class GameDetailsDialog extends HTMLElement {
   private isLoading: boolean = false;
   private errorMessage: string | undefined = undefined;
   private isCommentsLoading: boolean = false;
-  private commentsErrorMessage: string | undefined = undefined; 
+  private commentsErrorMessage: string | undefined = undefined;
 
   constructor() {
     super();
@@ -68,26 +68,31 @@ export class GameDetailsDialog extends HTMLElement {
               <button type="button" class="secondary-btn icon-btn favorites">Add to favorites</button>
           </div>
                    ${
-          this.isLoading
-              ? `
+                     this.isLoading
+                       ? `
             <div class="loading-state">
               <p>Loading Top Records from game details...</p>
             </div>`
-              : this.gameData
-                ? `
+                       : this.gameData
+                         ? `
                 <section id="top-records">
                 <h4>Top Records</h4>
                 <ul>
-                  ${this.gameData.topRecords.map((record) => 
-                    `<li>
+                  ${this.gameData.topRecords
+                    .map(
+                      (record) =>
+                        `<li>
                       <span>${record.playerName}</span>
                       <span>${record.score}pts <span class="dat">${timeAgo(record.achievedAt)}</span></span>
                       
-                    </li>`).join('')}
+                    </li>`
+                    )
+                    .join('')}
                 </ul>
                 </section>
-                `:''
-         }
+                `
+                         : ''
+                   }
         </div>
       </div>
     `;
