@@ -6,7 +6,7 @@ export interface GameSpecs {
 }
 
 export interface TopRecord {
-  achievedAt: Date;
+  achievedAt: string;
   playerName: string;
   position: number;
   score: number;

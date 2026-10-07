@@ -125,7 +125,7 @@
     .spec {
       padding: 1em;
       background-color: $white;
-      border-radius: $size-1;
+      border-radius: $corner-medium;
       border: 1px solid $on-primary; 
       border-width: 1px $size-05 $size-05 1px;
       h4 {
@@ -136,13 +136,83 @@
   }
 
   // play button + add to favorites section
-  .action {
-    display: block;
+  .actions {
+    display: flex;
     margin: 0 1.5em;
     justify-content: space-between;
   }
+  button {
+    border: 1px solid $on-primary; 
+    border-width: 1px $size-05 $size-05 1px;
+    padding: $btn-large;
+    font-size: $size-2;
+    font-weight: $bold;
+    border-radius: $corner-medium;
+    line-height: $btn-large-lineheight;
+  }
+  .favorites {
+    background: url('./../../assets/icons/like-icon.svg') no-repeat left center;
+    background-position: 1em center;
+    white-space: nowrap;
 
+  }
+  .icon-btn {
+    background-color: $white;
+    padding-left: 2.5em;
+    @media (max-width: $tablet-breakpoint) {
+      max-width: $size-7;
+      text-indent: 3em;
+      padding-left: 1.5em;
+      overflow-x: hidden;
+    }
+    &:hover {
+      background-color: $primary-low;
+    }
+  }
+  .primary-btn {
+    background-color: $primary;
+    &:hover {
+      background-color: $primary-high;
+    }
+  }
+// Top record section
+#top-records {
+  margin: 0 1.5em;
+  h4 {
+    padding-left: 1.5em;
+    background-repeat: no-repeat;
+    background-image: url('../../assets/icons/🏆.png');
+    background-position: left center;
+  }
+  ul {
+    list-style-type: none;
+    margin: 0 0 $size-1 0;
+    padding-left: 0;
+  }
+  li {
+    padding: 1em 1em 1em 2em;
+    border-radius: $corner-small;
+    background-color: $white;
+    background-repeat: no-repeat;
+    background-position: 0.5em center;
+    margin-bottom: $size-1;
+    &:first-of-type {
+      background-image: url('../../assets/icons/🥇.png');
+    }
+    &:nth-of-type(2) {
+      background-image: url('../../assets/icons/🥈.png');
+    }
+    &:nth-of-type(3) {
+      background-image: url('../../assets/icons/🥉.png');
+    }
+    display: flex;
+    justify-content: space-between;
 
+    .date {
+      color: $on-bg-low;
+    }
+  }
+}
   .loading-state,
   .error-state {
     text-align: center;
