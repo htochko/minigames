@@ -2,6 +2,7 @@ import styles from './game-details-dialog.scss';
 import { timeAgo } from '../../utils/date-formatter';
 import type { GameDetail } from '../../types/game';
 
+
 export class GameDetailsDialog extends HTMLElement {
   private isOpen: boolean = false;
   private currentSlug: string | undefined = undefined;
@@ -90,6 +91,7 @@ export class GameDetailsDialog extends HTMLElement {
                     .join('')}
                 </ul>
                 </section>
+                <game-comments slug="${this.gameData.slug}"></game-comments>
                 `
                          : ''
                    }
@@ -152,6 +154,11 @@ export class GameDetailsDialog extends HTMLElement {
 
       if (targetWithSlug && typeof targetWithSlug.dataset.slug === 'string') {
         this.open(targetWithSlug.dataset.slug);
+      }
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && this.isOpen) {
+        this.close();
       }
     });
   }
