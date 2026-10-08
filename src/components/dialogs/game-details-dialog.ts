@@ -2,7 +2,6 @@ import styles from './game-details-dialog.scss';
 import { timeAgo } from '../../utils/date-formatter';
 import type { GameDetail } from '../../types/game';
 
-
 export class GameDetailsDialog extends HTMLElement {
   private isOpen: boolean = false;
   private currentSlug: string | undefined = undefined;

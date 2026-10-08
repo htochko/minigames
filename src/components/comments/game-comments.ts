@@ -7,7 +7,7 @@ interface CommentItem {
   text: string;
   likesCount: number;
   isLikedByCurrentUser: boolean;
-  createdAt: string
+  createdAt: string;
 }
 
 export class GameComments extends HTMLElement {
@@ -36,8 +36,8 @@ export class GameComments extends HTMLElement {
     try {
       const response = await fetch(`${endpoint}/games/${slug}/comments`);
       if (!response.ok) throw new Error('Failed to load comments.');
-      
-      const {meta, data} = await response.json();
+
+      const { meta, data } = await response.json();
       this.comments = data;
       this.total = meta.totalComments;
     } catch {
@@ -54,15 +54,24 @@ export class GameComments extends HTMLElement {
       <style>${styles}</style>
       <div>
         <h4>Community Comments</h4>
-        ${this.isLoading ? `
+        ${
+          this.isLoading
+            ? `
           <p class="sub-loader">Loading comments...</p>
-        ` : this.errorMessage ? `
+        `
+            : this.errorMessage
+              ? `
           <p class="error-state">${this.errorMessage}</p>
-        ` : this.comments.length === 0 ? `
+        `
+              : this.comments.length === 0
+                ? `
           <p class="no-comments">No comments yet. Be the first to share your thoughts!</p>
-        ` : `
+        `
+                : `
           <div class="comments-list">
-            ${this.comments.map(comment => `
+            ${this.comments
+              .map(
+                (comment) => `
               <div class="comment-item">
                 <div class="comment-item-meta">
                     <strong>${comment.authorName}</strong>
@@ -72,13 +81,16 @@ export class GameComments extends HTMLElement {
                 <button type='button' class='icon-btn like ${comment.isLikedByCurrentUser ? 'liked' : 'unliked'}'></button>
                 <strong>${comment.likesCount}</strong>
                 </div>
-            `).join('')}
+            `
+              )
+              .join('')}
           </div>
-        `}
+        `
+        }
       </div>
     `;
   }
-  
+
   connectedCallback() {
     this.render();
     const slug = this.getAttribute('slug');
