@@ -21,12 +21,12 @@ export class Header extends HTMLElement {
 
         <!-- Wrapped container for links that go into the mobile burger menu -->
         <div class="nav-links-wrapper">
-            <li><a href="#/" data-link>Home</a></li>
-            <li><a href="#/library" data-link>Library</a></li>
-            <li><a href="#tournaments">Tournaments</a></li>
-            <li><a href="#community">Community</a></li>
-            <li><a href="#login" class="btn-primary">Log in</a></li>
-            <li><a href="#sugnup" class="btn-primary">Sign up</a></li>
+            <li><a href="/" data-link>Home</a></li>
+            <li><a href="/library" data-link>Library</a></li>
+            <li><a href="/tournaments">Tournaments</a></li>
+            <li><a href="/community">Community</a></li>
+            <li><a href="?auth=login" data-link class="btn-primary">Log in</a></li>
+            <li><a href="?auth=register" data-link class="btn-primary">Sign up</a></li>
         </div>
         <div class="nav-right-items">
             <!-- Burger Icon Label (Visible only on mobile) -->
