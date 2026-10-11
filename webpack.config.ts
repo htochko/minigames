@@ -84,6 +84,7 @@ const config: webpack.Configuration = {
       ],
     port: 3000, // Serve the app on http://localhost:3000
     open: true, // Automatically opens the browser when the server starts
+    historyApiFallback: true,
   },
 };
 

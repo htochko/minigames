@@ -1,4 +1,5 @@
 import styles from './table.scss';
+import { Router } from '../../app/router';
 
 interface Item {
   slug: string;
@@ -25,7 +26,7 @@ export class Table extends HTMLElement {
   private itemsPerPage: number = 6;
 
   private currentCategory: string | undefined = undefined;
-  private currentSort: SortOptions = 'rating-desc';
+  private currentSort: SortOptions | string = 'rating-desc';
 
   private selectedItem: Item | null | undefined = undefined;
 
@@ -42,9 +43,9 @@ export class Table extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
-  private async fetchItems(category = 'all', page = 1) {
+  private async fetchItems() {
     try {
-      const limit = `limit=${this.itemsPerPage}&category=${category}&page=${page}&sort=${this.currentSort}`;
+      const limit = `limit=${this.itemsPerPage}&category=${this.currentCategory}&page=${this.currentPage}&sort=${this.currentSort}`;
       const response = await fetch(`${endpointUrl}/games?${limit}`);
       if (!response.ok) throw new Error('Failed to fetch games');
 
@@ -82,7 +83,8 @@ export class Table extends HTMLElement {
       return;
     }
     this.currentPage = newPage;
-    await this.fetchItems(this.currentCategory, this.currentPage);
+    await this.fetchItems();
+    Router.getInstance().updateQueryParam('page', this.currentPage.toString());
     this.render();
   }
 
@@ -92,22 +94,25 @@ export class Table extends HTMLElement {
       return;
     }
     this.currentPage = page;
-    await this.fetchItems(this.currentCategory, this.currentPage);
+    await this.fetchItems();
     this.render();
   }
 
   private async setCategory(category: string) {
     this.currentCategory = category;
     this.currentPage = 1; // Reset to page 1 on filter change
-    await this.fetchItems(category, this.currentPage);
+    await this.fetchItems();
+    Router.getInstance().updateQueryParam('category', this.currentCategory);
+    Router.getInstance().updateQueryParam('page', this.currentPage.toString());
     this.render();
   }
 
   private async setSort(sortValue: SortOptions) {
     this.currentSort = sortValue;
     this.currentPage = 1;
-    this.currentSort = sortValue;
-    await this.fetchItems(this.currentCategory, this.currentPage);
+    await this.fetchItems();
+    Router.getInstance().updateQueryParam('sort', this.currentSort);
+    Router.getInstance().updateQueryParam('page', this.currentPage.toString());
     this.render();
   }
 
@@ -225,7 +230,12 @@ export class Table extends HTMLElement {
 
   async connectedCallback() {
     await this.fetchCategories();
-    await this.fetchItems(this.currentCategory, 1);
+    const parameters = new URLSearchParams(globalThis.location.search);
+
+    this.currentCategory = parameters.get('category') || 'all';
+    this.currentSort = parameters.get('sort') || 'rating-desc';
+    this.currentPage = Math.max(1, Number(parameters.get('page')));
+    await this.fetchItems();
     this.render();
     this.attachEventListeners();
   }

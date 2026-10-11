@@ -1,6 +1,7 @@
 import styles from './game-details-dialog.scss';
 import { timeAgo } from '../../utils/date-formatter';
 import type { GameDetail } from '../../types/game';
+import { Router } from './../../app/router';
 
 export class GameDetailsDialog extends HTMLElement {
   private isOpen: boolean = false;
@@ -90,6 +91,7 @@ export class GameDetailsDialog extends HTMLElement {
                     .join('')}
                 </ul>
                 </section>
+                <game-comments slug="${this.gameData.slug}"></game-comments>
                 `
                          : ''
                    }
@@ -117,7 +119,7 @@ export class GameDetailsDialog extends HTMLElement {
       });
   }
 
-  private async open(slug: string) {
+  private async open(slug: string, shouldUpdateHistory = true) {
     this.isOpen = true;
     this.currentSlug = slug;
     this.isLoading = true;
@@ -139,6 +141,9 @@ export class GameDetailsDialog extends HTMLElement {
       this.isLoading = false;
       this.render();
     }
+    if (shouldUpdateHistory) {
+      Router.getInstance().updateQueryParam('game', slug);
+    }
   }
 
   private setupGlobalListener() {
@@ -154,18 +159,48 @@ export class GameDetailsDialog extends HTMLElement {
         this.open(targetWithSlug.dataset.slug);
       }
     });
-  }
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && this.isOpen) {
+        this.close();
+      }
+    });
+    globalThis.addEventListener('app-state-change', ((event: CustomEvent) => {
+      const { searchParams } = event.detail;
+      const gameId = searchParams.get('game');
 
-  public close() {
+      if (gameId && !this.isOpen) {
+        this.open(gameId, false);
+      } else if (!gameId && this.isOpen) {
+        this.close(false);
+      }
+    }) as EventListener);
+  }
+  private setupRouterSync() {
+    globalThis.addEventListener('app-state-change', ((event: CustomEvent) => {
+      const { searchParams } = event.detail;
+      const gameId = searchParams.get('game');
+
+      if (gameId && (!this.isOpen || this.currentSlug !== gameId)) {
+        this.open(gameId, false);
+      } else if (!gameId && this.isOpen) {
+        this.close(false);
+      }
+    }) as EventListener);
+  }
+  public close(shouldUpdateHistory = true) {
     console.log('close modal');
     this.isOpen = false;
     this.currentSlug = undefined;
     this.render();
+    if (shouldUpdateHistory) {
+      Router.getInstance().updateQueryParam('game', undefined);
+    }
   }
 
   connectedCallback() {
     this.render();
     this.setupGlobalListener();
+    this.setupRouterSync();
   }
 }
 
