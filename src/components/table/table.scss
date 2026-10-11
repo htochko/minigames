@@ -125,61 +125,6 @@ h2 {
   }
 }
 
-// Modal Overlay
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  backdrop-filter: blur(4px);
-
-  &.active {
-    display: flex;
-  }
-
-  .modal-dialog {
-    background-color: $surface;
-    border: 1px solid $on-bg;
-    border-radius: $corner-medium;
-    padding: $size-05;
-    max-width: $tablet-breakpoint;
-    width: 90%;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    position: relative;
-
-    h3 {
-      margin-top: 0;
-      color: $on-bg;
-    }
-
-    p {
-      color: $on-bg;
-      line-height: 1.5;
-    }
-
-    .close-btn {
-      position: absolute;
-      top: $size-1;
-      right: $size-1;
-      background: none;
-      border: none;
-      color: $on-bg-low;
-      font-size: 1.25rem;
-      cursor: pointer;
-
-      &:hover {
-        color: $on-bg;
-      }
-    }
-  }
-}
-
 // Control Panel Layout: Tags on left, Sorter on right
 .control-panel {
   display: flex;

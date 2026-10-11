@@ -84,15 +84,19 @@ const config: webpack.Configuration = {
       ],
     port: 3000, // Serve the app on http://localhost:3000
     open: true, // Automatically opens the browser when the server starts
+    historyApiFallback: true,
   },
 };
 
 export default (environment, argv) => {
+  const apiEndpoint = process.env.API_ENDPOINT || 'https://faxb76kxra.execute-api.eu-central-1.amazonaws.com/api'
   if (argv.mode === "development") {
     // ...
   } else if (argv.mode === "production") {
     // ...
   }
-
+  config.plugins?.push(new webpack.DefinePlugin({
+        'process.env.API_ENDPOINT': JSON.stringify(apiEndpoint),
+      }))
   return config;
 };
