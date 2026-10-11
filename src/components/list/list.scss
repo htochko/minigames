@@ -1,0 +1,34 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/constants' as *;
+:host {
+    font-family: $inter;
+}
+
+table {
+    width: calc(100% - 3em);
+    margin: 0 auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border-radius: $size-1;
+    thead {
+        color: $white;
+        background-color: $tertiary;
+        th {
+              line-height: 3em;
+        }
+    }
+    tbody tr {
+
+        padding: 0;
+
+        &:nth-child(odd)   { 
+            background-color:#eee; 
+        }
+        td {
+            text-align: center;
+            margin: auto;
+            line-height: 3em;
+        }
+    }
+
+}

@@ -1,0 +1,128 @@
+@use './../../styles/tokens' as *;
+@use './../../styles/mixins' as *;
+@use './../../styles/constants' as *;
+
+:host {
+          display: block;
+          width: 100%;
+          box-sizing: border-box;
+          font-family: $inter;
+}
+
+ul {
+  list-style: none;
+}
+
+.btn-primary {
+  color: $on-primary;
+  border: solid 2px $on-primary;
+  white-space: nowrap;
+  padding: 0 $body-small;
+  border-radius: $corner-small;
+
+  &:hover {
+      background-color: $primary-low;
+    }
+}
+        .header-container {
+          margin: 0 auto;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          nav {
+            display: flex;
+            gap: $headline-large;
+
+            a {
+                max-height: $size-4;
+                color: $on-bg;
+                font-size: $label-extra-large;
+                font-weight: $bold;
+                text-decoration: none;
+                font-size: $body-medium;
+                line-height: $size-4;
+                transition: color 0.2s ease;
+                text-decoration: none;
+              &.nav-link {
+                  &[aria-current='page'] {
+                    color: $on-primary;
+                    font-weight: $bold;
+                  }
+                  &:hover {
+                    color: $on-primary;
+                    text-decoration: underline;
+                    text-underline-offset: 0.5em;
+                }
+              }
+            }
+          }
+        }
+
+        .logo {
+          font-weight: $bold;
+          font-size: $headlline-medium;
+          color: $on-primary;
+          text-decoration: none;
+          background-image: url('./../../assets/icons/favicon.svg');
+          background-repeat: no-repeat;
+          padding-left: calc($headline-large + $size-1);
+          line-height: $headline-large;
+          max-height: $size-4;
+        }
+ @media screen and (min-width: calc($tablet-breakpoint + 1px))  {
+    .burger-item {
+      display: none;
+    }
+  }
+ @media screen and (max-width: $tablet-breakpoint) {
+  .nav-link {
+    display: none;
+  }
+  .burger-item {
+        display: block;
+      
+        /* Style the burger icon lines */
+        .burger-btn {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          width: calc($size-4 - 2*$size-1);
+          height:calc($size-4 - 2*$size-1);
+          cursor: pointer;
+          padding: $size-1;
+        }
+
+        .burger-btn span {
+          display: block;
+          height: 2px;
+          width: 100%;
+          background-color: #333;
+          transition: 0.3s;
+        }
+    }
+
+    
+
+    /* When checkbox is checked, drop down the mobile menu */
+    .burger-toggle:checked ~ ul .nav-links-wrapper {
+        display: flex;
+    }
+
+    /* Optional: Animate burger to an 'X' when open */
+    .burger-toggle:checked ~ ul .burger-btn span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    .burger-toggle:checked ~ ul .burger-btn span:nth-child(2) {
+        opacity: 0;
+    }
+    .burger-toggle:checked ~ ul .burger-btn span:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
+}
+
+@media screen and (max-width: $mobile-breakpoint) {
+  .mobile-hidden {
+    display: none;
+  }
+}

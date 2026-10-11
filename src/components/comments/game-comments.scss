@@ -1,0 +1,76 @@
+@use './../../styles/tokens.scss' as *;
+
+:host {
+  display: block;
+  padding-top: $size-05;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 0 1.5em;
+}
+
+h4 {
+  margin: 0 0 $size-05 0;
+  color: $on-bg;
+  font-size: 1.1rem;
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: $size-05;
+}
+
+.comment-item {
+  background: $white;
+  border: 1px solid $on-bg;
+  border-width: 1px $size-05 $size-05 1px;
+  border-radius: $corner-medium;
+  padding: $size-1;
+
+  .comment-item-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+  }
+
+  strong {
+    color: $on-primary;
+    font-size: 0.9rem;
+  }
+
+  p {
+    margin: 0.25rem 0 0 0;
+    color: $on-bg-low;
+    line-height: 1.4;
+  }
+  .icon-btn {
+    border: none;
+    border-radius: 2px;
+    height: $body-small;
+    width: $body-small;
+    background-color: $white;
+    &.like {
+        background-image: url('./../../assets/icons/like-icon.svg');
+        background-size: 100% auto;
+        background-repeat: no-repeat;
+    }
+    &.liked { 
+        color: $like;
+    }
+    &.unliked { 
+        color: $on-bg;
+    }
+    &:hover {
+        background-color: $bg;
+    }
+  }
+}
+
+.sub-loader,
+.no-comments,
+.error-state {
+  font-size: 0.9rem;
+  color: $on-bg-low;
+  text-align: center;
+  padding: 1rem 0;
+  margin: 0;
+}

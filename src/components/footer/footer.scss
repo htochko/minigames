@@ -1,0 +1,12 @@
+@use './../../styles/tokens' as *;
+
+.footer-container {
+    background-color: $bg-footer;
+}
+.footer-container a{
+    color: $surface;
+    text-decoration: none;
+}
+.footer-container a:hover{
+    color: $surface-low;
+}
