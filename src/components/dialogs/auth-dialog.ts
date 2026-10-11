@@ -53,15 +53,20 @@ export class AuthDialog extends HTMLElement {
   private validateEmail(value: string): string | undefined {
     if (!value.trim()) return 'Email is required.';
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return  (emailRegex.test(value)) ? undefined : 'Please enter a valid email address.';
+    return emailRegex.test(value)
+      ? undefined
+      : 'Please enter a valid email address.';
   }
 
   private validateUsername(value: string): string | undefined {
     if (!value.trim()) return 'Username is required.';
-    if (value.length < 2 || value.length > 30) return 'Username must be between 2 and 30 characters.';
+    if (value.length < 2 || value.length > 30)
+      return 'Username must be between 2 and 30 characters.';
     // Must start with uppercase English letter, followed by English letters and digits only
     const usernameRegex = /^[A-Z][A-Za-z0-9]{1,29}$/;
-    return (usernameRegex.test(value)) ? undefined : 'Must start with an uppercase letter and contain only letters and digits.';
+    return usernameRegex.test(value)
+      ? undefined
+      : 'Must start with an uppercase letter and contain only letters and digits.';
   }
 
   private validatePassword(value: string): string | undefined {
@@ -82,7 +87,7 @@ export class AuthDialog extends HTMLElement {
 
   private validateConfirmPassword(value: string): string | undefined {
     if (!value) return 'Please confirm your password.';
-    return (value === this.passwordValue) ? undefined : 'Passwords do not match.';
+    return value === this.passwordValue ? undefined : 'Passwords do not match.';
   }
 
   private isFormValid(): boolean {
@@ -93,7 +98,9 @@ export class AuthDialog extends HTMLElement {
 
     if (this.mode === 'register') {
       const usernameError = this.validateUsername(this.usernameValue);
-      const confirmError = this.validateConfirmPassword(this.confirmPasswordValue);
+      const confirmError = this.validateConfirmPassword(
+        this.confirmPasswordValue
+      );
       if (usernameError !== null || confirmError !== null) return false;
     }
 
@@ -101,7 +108,9 @@ export class AuthDialog extends HTMLElement {
   }
 
   private updateSubmitButtonState() {
-    const submitButton = this.shadowRoot?.getElementById('submit-btn') as HTMLButtonElement;
+    const submitButton = this.shadowRoot?.getElementById(
+      'submit-btn'
+    ) as HTMLButtonElement;
     if (submitButton) {
       submitButton.disabled = !this.isFormValid();
     }
@@ -114,47 +123,53 @@ export class AuthDialog extends HTMLElement {
         this.emailError = this.validateEmail(value);
         this.updateErrorDisplay('email', this.emailError);
         break;
-        }
-     
-    case 'username':{
-      this.usernameValue = value;
-      this.usernameError = this.validateUsername(value);
-      this.updateErrorDisplay('username', this.usernameError);
-      break;
-    } 
-
-    case 'password': {
-      this.passwordValue = value;
-      this.passwordError = this.validatePassword(value);
-      this.updateErrorDisplay('password', this.passwordError);
-
-      // Revalidate confirm password whenever password changes during registration
-      if (this.mode === 'register' && this.confirmPasswordValue) {
-        this.confirmPasswordError = this.validateConfirmPassword(this.confirmPasswordValue);
-        this.updateErrorDisplay('confirmPassword', this.confirmPasswordError);
-        
       }
-      break;
-    }
-    case 'confirmPassword': {
-      this.confirmPasswordValue = value;
-      this.confirmPasswordError = this.validateConfirmPassword(value);
-      this.updateErrorDisplay('confirmPassword', this.confirmPasswordError);
-    }
-  }
-  this.updateSubmitButtonState();
-}
 
-private updateErrorDisplay(fieldName: string, errorMessage: string | undefined) {
+      case 'username': {
+        this.usernameValue = value;
+        this.usernameError = this.validateUsername(value);
+        this.updateErrorDisplay('username', this.usernameError);
+        break;
+      }
+
+      case 'password': {
+        this.passwordValue = value;
+        this.passwordError = this.validatePassword(value);
+        this.updateErrorDisplay('password', this.passwordError);
+
+        // Revalidate confirm password whenever password changes during registration
+        if (this.mode === 'register' && this.confirmPasswordValue) {
+          this.confirmPasswordError = this.validateConfirmPassword(
+            this.confirmPasswordValue
+          );
+          this.updateErrorDisplay('confirmPassword', this.confirmPasswordError);
+        }
+        break;
+      }
+      case 'confirmPassword': {
+        this.confirmPasswordValue = value;
+        this.confirmPasswordError = this.validateConfirmPassword(value);
+        this.updateErrorDisplay('confirmPassword', this.confirmPasswordError);
+      }
+    }
+    this.updateSubmitButtonState();
+  }
+
+  private updateErrorDisplay(
+    fieldName: string,
+    errorMessage: string | undefined
+  ) {
     const errorElement = this.shadowRoot?.getElementById(`${fieldName}-error`);
-    const inputElement = this.shadowRoot?.getElementById(fieldName) as HTMLInputElement;
+    const inputElement = this.shadowRoot?.getElementById(
+      fieldName
+    ) as HTMLInputElement;
 
     if (errorElement) {
       errorElement.textContent = errorMessage ?? '';
     }
-    if (inputElement && errorMessage) { 
-        inputElement.classList.add('invalid');
-      }
+    if (inputElement && errorMessage) {
+      inputElement.classList.add('invalid');
+    }
     if (inputElement && !errorMessage) {
       inputElement.classList.remove('invalid');
     }
@@ -234,18 +249,30 @@ private updateErrorDisplay(fieldName: string, errorMessage: string | undefined) 
         console.log(`Submitted ${this.mode} form`);
         this.close();
       });
-    
+
     const inputs = ['email', 'username', 'password', 'confirmPassword'];
-    for(const id of inputs) {
-      const element = this.shadowRoot?.querySelector(`#${id}`) as HTMLInputElement;
-      if (!element) { return; }
-      element.addEventListener('input', (event) => this.handleFieldInput(id, (event.target as HTMLInputElement).value));
-      element.addEventListener('blur', (event) => this.handleFieldInput(id, (event.target as HTMLInputElement).value));
+    for (const id of inputs) {
+      const element = this.shadowRoot?.querySelector(
+        `#${id}`
+      ) as HTMLInputElement;
+      if (!element) {
+        return;
+      }
+      element.addEventListener('input', (event) =>
+        this.handleFieldInput(id, (event.target as HTMLInputElement).value)
+      );
+      element.addEventListener('blur', (event) =>
+        this.handleFieldInput(id, (event.target as HTMLInputElement).value)
+      );
     }
-    this.shadowRoot.querySelector('#auth-form')?.addEventListener('submit', (event) => {
-      event.preventDefault();
-      if (this.isFormValid()) { this.close(); }
-    });
+    this.shadowRoot
+      .querySelector('#auth-form')
+      ?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (this.isFormValid()) {
+          this.close();
+        }
+      });
   }
 
   private setupRouterSyncronization() {
@@ -261,7 +288,7 @@ private updateErrorDisplay(fieldName: string, errorMessage: string | undefined) 
     }) as EventListener);
   }
 
-  private formReset () {
+  private formReset() {
     this.emailValue = '';
     this.usernameValue = '';
     this.passwordValue = '';
