@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import webpack from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import Dotenv from "dotenv-webpack";
 
 // in case you run into any TypeScript error when configuring `devServer`
 import "webpack-dev-server";
@@ -27,6 +28,7 @@ const config: webpack.Configuration = {
           },
         ],
     }),
+    new Dotenv()
   ],
   module: {
     rules: [

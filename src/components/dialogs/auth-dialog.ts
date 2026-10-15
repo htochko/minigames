@@ -1,10 +1,17 @@
 import stylesModal from './modal.scss';
 import styles from './auth-dialog.scss';
+import { auth } from './../../services/firebase';
 import { Router } from './../../app/router';
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from '@firebase/auth';
 
 export class AuthDialog extends HTMLElement {
   private isOpen: boolean = false;
   private mode: 'login' | 'register' = 'login';
+  private isPending: boolean = false;
 
   // Fields values
   private emailValue: string = '';
@@ -17,6 +24,8 @@ export class AuthDialog extends HTMLElement {
   private usernameError: string | undefined = undefined;
   private passwordError: string | undefined = undefined;
   private confirmPasswordError: string | undefined = undefined;
+  private generalError: string | undefined = undefined;
+
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -43,6 +52,7 @@ export class AuthDialog extends HTMLElement {
     });
   }
   private switchMode(newMode: 'login' | 'register') {
+    if (this.isPending) return;
     this.mode = newMode;
     this.formReset();
     Router.getInstance().updateQueryParam('auth', newMode, true);
@@ -94,14 +104,22 @@ export class AuthDialog extends HTMLElement {
     const emailError = this.validateEmail(this.emailValue);
     const passError = this.validatePassword(this.passwordValue);
 
-    if (emailError !== null || passError !== null) return false;
+    if (emailError !== undefined || passError !== undefined) return false;
 
     if (this.mode === 'register') {
       const usernameError = this.validateUsername(this.usernameValue);
       const confirmError = this.validateConfirmPassword(
         this.confirmPasswordValue
       );
-      if (usernameError !== null || confirmError !== null) return false;
+      console.log(
+        'VALIDATE',
+        usernameError,
+        confirmError,
+        emailError,
+        passError
+      );
+      if (usernameError !== undefined || confirmError !== undefined)
+        return false;
     }
 
     return true;
@@ -159,9 +177,9 @@ export class AuthDialog extends HTMLElement {
     fieldName: string,
     errorMessage: string | undefined
   ) {
-    const errorElement = this.shadowRoot?.getElementById(`${fieldName}-error`);
-    const inputElement = this.shadowRoot?.getElementById(
-      fieldName
+    const errorElement = this.shadowRoot?.querySelector(`#${fieldName}-error`);
+    const inputElement = this.shadowRoot?.querySelector(
+      `#${fieldName}`
     ) as HTMLInputElement;
 
     if (errorElement) {
@@ -172,6 +190,58 @@ export class AuthDialog extends HTMLElement {
     }
     if (inputElement && !errorMessage) {
       inputElement.classList.remove('invalid');
+    }
+  }
+
+  // --- Firebase Authentication Operation ---
+  private async handleFormSubmit(event: SubmitEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log(!this.isFormValid(), this.isPending);
+    if (!this.isFormValid() || this.isPending) return;
+
+    this.isPending = true;
+    this.generalError = undefined;
+
+    console.log('Submit Event dispatched', SubmitEvent);
+
+    try {
+      if (this.mode === 'login') {
+        const authRespond = await signInWithEmailAndPassword(
+          auth,
+          this.emailValue,
+          this.passwordValue
+        );
+        console.log(authRespond);
+      } else {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          this.emailValue,
+          this.passwordValue
+        );
+        console.log(userCredential);
+
+        if (userCredential.user) {
+          await updateProfile(userCredential.user, {
+            displayName: this.usernameValue,
+          });
+        }
+      }
+
+      // Success: Close modal and establish session state
+      this.close();
+      globalThis.dispatchEvent(
+        new CustomEvent('auth-state-changed', {
+          detail: { user: auth.currentUser },
+        })
+      );
+    } catch (error: unknown) {
+      const authError = error as Error;
+      this.generalError =
+        authError.message ?? 'Authentication failed. Please try again.';
+      console.log('error', authError, authError.name);
+      this.isPending = false;
+      this.render();
     }
   }
 
@@ -193,31 +263,40 @@ export class AuthDialog extends HTMLElement {
             <button class="tab ${this.mode === 'register' ? 'active' : ''}" id="tab-register">Register</button>
           </div>
 
-          <form id="auth-form">
+          <form id="auth-form" method="POST">
             ${
               this.mode === 'register'
                 ? `
               <label>
                 Username
-                <input type="text" name="username" required placeholder="Choose a username" />
+                <input type="text" name="username" id="username" required placeholder="Choose a username" />
+                <span id="username-error" class="form-error">${this.usernameError === undefined ? '' : this.usernameError}</span>
               </label>
             `
                 : ''
             }
             <label>
               Email Address
-              <input type="email" name="email" required placeholder="name@example.com" />
+              <input type="email" name="email" id="email" required placeholder="name@example.com" />
+              <span id="email-error" class="form-error">${this.emailError === undefined ? '' : this.emailError}</span>
             </label>
             <label>
               Password
-              <input type="password" name="password" required placeholder="••••••••" />
+              <input type="password" name="password" id="password" required placeholder="••••••••" />
+              <span id="password-error" class="form-error">${this.passwordError === undefined ? '' : this.passwordError}</span>
             </label>
-            <label>
-              Password
-              <input type="password" name="repeatpassword" required placeholder="••••••••" />
-            </label>
+            ${
+              this.mode === 'register'
+                ? `<label>
+              Repeat Password
+              <input type="password" name="confirmPassword" id="confirmPassword" required placeholder="••••••••" />
+              <span id="confirmPassword-error" class="form-error">${this.confirmPasswordError === undefined ? '' : this.confirmPasswordError}</span>
+            </label>`
+                : ''
+            }
             <button type="submit">${this.mode === 'login' ? 'Login' : 'Create Account'}</button>
           </form>
+          <span>${this.generalError === undefined ? '' : this.generalError}</span>
           <hr/>
           <button type='button' class="google">${this.mode === 'login' ? 'Login' : 'Continue'} with google</button>
         </div>
@@ -241,22 +320,14 @@ export class AuthDialog extends HTMLElement {
       .querySelector('#tab-register')
       ?.addEventListener('click', () => this.switchMode('register'));
 
-    this.shadowRoot
-      .querySelector('#auth-form')
-      ?.addEventListener('submit', (event) => {
-        event.preventDefault();
-        // Handle login/register submission logic goes here
-        console.log(`Submitted ${this.mode} form`);
-        this.close();
-      });
-
     const inputs = ['email', 'username', 'password', 'confirmPassword'];
+
     for (const id of inputs) {
       const element = this.shadowRoot?.querySelector(
         `#${id}`
       ) as HTMLInputElement;
       if (!element) {
-        return;
+        continue;
       }
       element.addEventListener('input', (event) =>
         this.handleFieldInput(id, (event.target as HTMLInputElement).value)
@@ -265,13 +336,11 @@ export class AuthDialog extends HTMLElement {
         this.handleFieldInput(id, (event.target as HTMLInputElement).value)
       );
     }
+
     this.shadowRoot
       .querySelector('#auth-form')
       ?.addEventListener('submit', (event) => {
-        event.preventDefault();
-        if (this.isFormValid()) {
-          this.close();
-        }
+        this.handleFormSubmit(event as SubmitEvent);
       });
   }
 
@@ -297,6 +366,7 @@ export class AuthDialog extends HTMLElement {
     this.usernameError = undefined;
     this.passwordError = undefined;
     this.confirmPasswordError = undefined;
+    this.generalError = undefined;
   }
 
   connectedCallback() {
