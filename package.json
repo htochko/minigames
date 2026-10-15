@@ -16,6 +16,7 @@
     "@typescript-eslint/parser": "^8.70.0",
     "copy-webpack-plugin": "^14.0.0",
     "css-loader": "^7.1.5",
+    "dotenv-webpack": "^9.0.0",
     "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-unicorn": "^76.0.0",
@@ -34,6 +35,11 @@
     "webpack-dev-server": "^6.0.0"
   },
   "allowScripts": {
-    "@parcel/watcher@2.6.0": true
+    "@parcel/watcher@2.6.0": true,
+    "@firebase/util@1.15.3": true
+  },
+  "dependencies": {
+    "@firebase/app": "^0.16.2",
+    "@firebase/auth": "^1.13.6"
   }
 }
